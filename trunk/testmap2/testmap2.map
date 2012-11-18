@@ -1,0 +1,8 @@
+<map edf:definitions="line-z,editor_main">
+    <spawnpoint id="spawnpoint (2)" interior="0" model="73" dimension="0" posX="-383.10000610352" posY="-2858" posZ="41.099998474121" rotX="0" rotY="0" rotZ="180"></spawnpoint>
+	
+    <vehicle id="vehicle (Pony) (2)" paintjob="3" interior="0" alpha="255" model="413" plate="WTVDEP3" dimension="0" color="105,88,83,245,245,245,0,0,0,0,0,0" maxfuel="80" needengines="1" needtires="4" posX="-368.89999389648" posY="-2825.8999023438" posZ="44.900001525879" rotX="0" rotY="0" rotZ="78"></vehicle>
+    <vehicle id="vehicle (Pony) (3)" paintjob="3" interior="0" alpha="255" model="413" plate="Y0O4WB3" dimension="0" color="105,88,83,245,245,245,0,0,0,0,0,0" maxfuel="80" needengines="1" needtires="4" posX="-383.29998779297" posY="-2822.8000488281" posZ="45.5" rotX="0" rotY="0" rotZ="77.997436523438"></vehicle>
+    <vehicle id="vehicle (Pony) (4)" paintjob="3" interior="0" alpha="255" model="413" plate="ID7W8Q2" dimension="0" color="105,88,83,245,245,245,0,0,0,0,0,0" maxfuel="80" needengines="1" needtires="4" posX="-362.39999389648" posY="-2827.1000976563" posZ="44.599998474121" rotX="0" rotY="0" rotZ="77.997436523438"></vehicle>
+    <vehicle id="vehicle (Pony) (5)" paintjob="3" interior="0" alpha="255" model="413" plate="TY1761M" dimension="0" color="105,88,83,245,245,245,0,0,0,0,0,0" maxfuel="80" needengines="1" needtires="4" posX="-376.10000610352" posY="-2824.1999511719" posZ="45.200000762939" rotX="0" rotY="0" rotZ="77.997436523438"></vehicle>
+</map>

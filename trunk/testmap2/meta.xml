@@ -1,0 +1,12 @@
+<meta>
+    <info gamemodes="line-z" type="map" version="1.0"></info>
+    <map src="testmap2.map" dimension="0"></map>
+    <settings>
+        <setting name="#minplayers" value="[ 0 ]"></setting>
+        <setting name="#maxplayers" value="[ 128 ]"></setting>
+        <setting name="#gravity" value="[ 0.008000 ]"></setting>
+        <setting name="#weather" value="[ 9 ]"></setting>
+        <setting name="#waveheight" value="[ 1 ]"></setting>
+        <setting name="#gamespeed" value="[ 1 ]"></setting>
+    </settings>
+</meta>
