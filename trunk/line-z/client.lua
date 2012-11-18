@@ -1,16 +1,14 @@
 ﻿--[[
 
-GTA-DAYz CLONE
-
+GTA-DAYz / WASTELAND MOD
 COPYRIGHT DRLINE 2012 DO NOT STEAL LOL
 
-
 uses these fine resources: 
-	code from marwin the carazy german 
+	marwin's survivor system gui
 	bone_attach resource
 	glue resource
-	modified zday resource
-	more shit im sure
+	zday resource
+	betterWeather resource
 
 EVERYTHING IS ALL ABOUT FUN DONT TAKE LIFE SO SERIOUSLY GODDAMN
 

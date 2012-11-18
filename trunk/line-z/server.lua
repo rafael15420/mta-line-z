@@ -1,13 +1,10 @@
 --[[
 
-GTA-DAYz CLONE
-
+GTA-DAYz / WASTELAND MOD
 COPYRIGHT DRLINE 2012 DO NOT STEAL LOL
 
-
 uses these fine resources: 
-	code from marwin the carazy german 
-	recreated server code by me DRLINE
+	marwin's survivor system gui
 	bone_attach resource
 	glue resource
 	zday resource
@@ -16,15 +13,14 @@ uses these fine resources:
 EVERYTHING IS ALL ABOUT FUN DONT TAKE LIFE SO SERIOUSLY GODDAMN
 
 TODO: 	finish item funcs
-		backpacks
-		zombies (passable)
-		move glue code to here
 		finish loot funcs
-
+		write item spawning code (pull spawns from map data [specs TBA])
+		backpacks
+			bone-attach
+		zombies
 ]]--
 
 --VARIABLES YO
-local resRoot = getResourceRootElement()
 					-- 1,   2,   3,     4,  5,    6
 local invMaster = { --id,init,name,weight,dmg,gtaID
 	--prim weps
@@ -228,7 +224,7 @@ function getAttachOffsets(e1,e2) --thank you based glue resource
 	local rotZ = rotpZ - rotvZ	
 	return offX,offY,offZ,rotX,rotY,rotZ
 end
-function initVeh(eVeh) --TODO(80%): parenting for loot zones (loot framework will have a func)
+function initVeh(eVeh) --TODO(80%): parenting for loot zones (loot frame will have a func) CONSIDER THE FOLLOWING: Ext is probably the loot zone
 	--[[ vehicle extension inventory explaination (tires/fuel/engine/etc)
 	
 		this function is designed to be called on individual vehicles
@@ -422,8 +418,8 @@ function deathHelper(ePlr)
 				setTimer(destroyElement,1800000,1,corpse)
 			end,2000,1)
 end
-function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF MAGIC HAPPENS HERE
-	outputChatBox("creating '"..tostring(thingType).."'")
+function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF "MAGIC" HAPPENS HERE
+	outputChatBox("creating '"..tostring(thingType).."'") --debug stuff
 	local x,y,z = getElementPosition(ePlr)
 			  z = z-0.77
 	local _,_,r = getElementRotation(ePlr)
@@ -439,7 +435,7 @@ function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF MAG
 			setElementInterior(tObj[1],i)
 			setElementDimension(tObj[1],d)
 			setElementFrozen(tObj[1],true)
-			--setElementCollisionsEnabled(tObj[1],false)
+			--setElementCollisionsEnabled(tObj[1],false) --maybe figure out a way to stop the dynamic wood from busting apart
 			setObjectScale(tObj[1],0.5)
 		tObj[2] = createObject(3525,x,y,z-0.77,0,0,r)
 			setElementInterior(tObj[2],i)
@@ -474,7 +470,7 @@ function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF MAG
 	end
 	if msLifetime then setTimer(destroyElement,msLifetime,1,tObj[1]) end
 end
-function createLootZone(e,zType,bAttach) --TODO(75%): pull/link/init inventories 
+function createLootZone(e,zType,bAttach) --TODO(75%): pull/link/init inventories / make it work with vehicles / item loot zones
 	local x,y,z = getElementPosition(e)
 	local eType = getElementType(e)
 	local zOff = -0.77
@@ -678,7 +674,7 @@ function medicHandler(item,target) --writeme(10%)
 end
 addEvent("onPlayerUseMedicObject",true)
 addEventHandler("onPlayerUseMedicObject", root, medicHandler)
-function rearmHandler(item,slot) --proto-me / writeme(0%)
+function rearmHandler(item,slot) --proto-me / writeme / research(0%)
 	if itemCheck(source, item) then 
 	
 	end
@@ -702,11 +698,12 @@ addEventHandler("kilLDayZPlayer", root, killHandler)
 
 
 --HOOKS
-function loadMap(startedMap)
+function loadMap(startedMap) --RELEASE: remove the train what the fuck are you thinking
 	mapRoot = getResourceRootElement(startedMap)
 	initAllVehicles()
-	local myTrain = createVehicle(537,1718,-1954.3,15)  -- This will make a freight train just east of the LS train station
-	setTrainDerailable(myTrain, false) -- myTrain can not be derailed now
+		--wait why is there a train here WHAT ARE YOU DOING
+		local myTrain = createVehicle(537,1718,-1954.3,15)  -- This will make a freight train at the LS train station
+		setTrainDerailable(myTrain, false) -- myTrain can not be derailed now WATCH OUT
 	outputServerLog("map loaded")
 end
 addEventHandler("onGamemodeMapStart", root, loadMap)
@@ -716,7 +713,7 @@ function joinHandler()
 	end	
 end
 addEventHandler("onPlayerJoin", root, joinHandler)
-function quitHandler() --this should work
+function quitHandler() 
 	local usrAcct = getPlayerAccount(source)
 	if isGuestAccount(usrAcct) then
 		outputServerLog("POO")
@@ -737,7 +734,7 @@ function deathHandler(tot,atk,wpn,bp,bStealth)
 	triggerClientEvent(source,"onClientPlayerDeathInfo",root)
 	setAccountData(usrAcct, "line-z.spawn", spawn)
 	deathHelper(source)
-	setTimer(spawnPlr,7150,1,source)
+	setTimer(spawnPlr,7050,1,source)
 end
 addEventHandler("onPlayerWasted", root, deathHandler)
 function exitHandler()
