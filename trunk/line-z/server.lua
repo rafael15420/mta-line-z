@@ -726,10 +726,11 @@ function quitHandler()
 end
 addEventHandler("onPlayerQuit", root, quitHandler)
 function deathHandler(tot,atk,wpn,bp,bStealth) 
-	local usrAcct,wpnID,spawn,bpart = getPlayerAccount(source),
-									  0,
-									  toJSON(randomSpawn()),
-									  4
+	local usrAcct,wpnID,spawn,bpart = 
+			getPlayerAccount(source),
+			0,
+			toJSON(randomSpawn()),
+			4
 	setElementData(source,"isDead",true)
 	triggerClientEvent(source,"onClientPlayerDeathInfo",root)
 	setAccountData(usrAcct, "line-z.spawn", spawn)
@@ -743,7 +744,7 @@ function exitHandler()
 		kickPlayer (v, "server shutting down.")
 	end
 end
-addEventHandler ( "onResourceStop", resourceRoot, exitHandler)
+addEventHandler ("onResourceStop", resourceRoot, exitHandler)
 
 --TIMERS
 function handleTrafficLightsOutOfOrder() --i really like this thank you mtawiki
