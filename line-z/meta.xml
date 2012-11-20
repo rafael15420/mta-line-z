@@ -5,10 +5,9 @@
     <script src="client/lua/login.lua" type="client" />
     
     <script src="client/lua/textlib.lua" type="client" />
+    <script src="client/lua/ci.lua" type="client" />        
     
-    <script src="client.lua" type="client" />
-    <script src="client/lua/ci.lua" type="client" />
-    
+	<script src="client.lua" type="client" />
     <script src="client/lua/animals.lua" type="client" />
     <script src="client/lua/inventory.lua" type="client" />
     <script src="client/lua/menu.lua" type="client" />
