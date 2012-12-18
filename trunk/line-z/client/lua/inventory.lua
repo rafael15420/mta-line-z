@@ -3,7 +3,7 @@
 ----*			DayZ MTA Script inventory.lua			*----
 ----* 
 ----* i couldnt think of anything funny to say here
-----* 
+----*  todo: everything
 ----*														*----
 #---------------------------------------------------------------#
 ]]

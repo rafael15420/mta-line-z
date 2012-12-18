@@ -4,13 +4,11 @@ GTA-DAYz / WASTELAND MOD
 COPYRIGHT DRLINE 2012 DO NOT STEAL LOL
 
 uses these fine resources: 
-	marwin's survivor system gui
+	marwin survivor system gui
 	bone_attach resource
 	glue resource
-	zday resource
+	zday resource (maybe)
 	betterWeather resource
-
-EVERYTHING IS ALL ABOUT FUN DONT TAKE LIFE SO SERIOUSLY GODDAMN
 
 TODO: 	finish item funcs
 		finish loot funcs
@@ -196,10 +194,87 @@ local skinTable = { --skinTable[itemName][#] = { skinID, banditskinID } --add ne
 	["Standart Skin"] = {73,288},
 	["Sniper Skin"] = {285,285}
 }
+local weaponAmmoTable = {
+	["Pistol Ammo"] = {
+		{"Pistol", 22}, 
+		{"Silenced Pistol", 23}, 
+		{"Desert Eagle", 24}
+	}, 
+	["Smg Ammo"] = {
+		{"Uzi", 28}, 
+		{"TEC-9", 32}, 
+		{"MP5", 29}
+	}, 
+	["Assault Ammo"] = {
+		{"AK-47", 30}, 
+		{"M4", 31}
+	}, 
+	["Shotgun Ammo"] = {
+		{"Shotgun", 25}, 
+		{"Sawn-Off Shotgun", 26}, 
+		{"SPAZ-12 Combat Shotgun", 27}
+	}, 
+	["Sniper Ammo"] = {
+		{"Country Rifle", 33}, 
+		{"Sniper Rifle", 34}}, 
+		["Rocket Ammo"] = {
+		{"Heat-Seeking RPG", 36}, 
+		{"Rocket Launcher", 35}
+	}, 
+	others = {
+		{"Parachute", 46}, 
+		{"Satchel", 39}, 
+		{"Tear Gas", 17}, 
+		{"Grenade", 16}, 
+		{"Knife", 4}, 
+		{"Katana", 8}
+	}
+}
 
 
---FUNctions
-function getAttachOffsets(e1,e2) --thank you based glue resource
+--FUNctions TODO: organize this
+function getWeaponAmmoType(weaponName, notOthers) --FUTR: update to work with invMaster
+  if not notOthers then
+    for i,weaponData in ipairs(weaponAmmoTable.others) do
+      if weaponName == weaponData[1] then
+        return weaponData[1], weaponData[2]
+      end
+    end
+  end
+  for i,weaponData in ipairs(weaponAmmoTable["Pistol Ammo"]) do
+    if weaponName == weaponData[1] then
+      return "Pistol Ammo", weaponData[2]
+    end
+  end
+  for i,weaponData in ipairs(weaponAmmoTable["Smg Ammo"]) do
+    if weaponName == weaponData[1] then
+      return "Smg Ammo", weaponData[2]
+    end
+  end
+  for i,weaponData in ipairs(weaponAmmoTable["Assault Ammo"]) do
+    if weaponName == weaponData[1] then
+      return "Assault Ammo", weaponData[2]
+    end
+  end
+  for i,weaponData in ipairs(weaponAmmoTable["Shotgun Ammo"]) do
+    if weaponName == weaponData[1] then
+      return "Shotgun Ammo", weaponData[2]
+    end
+  end
+  for i,weaponData in ipairs(weaponAmmoTable["Sniper Ammo"]) do
+    if weaponName == weaponData[1] then
+      return "Sniper Ammo", weaponData[2]
+    end
+  end
+  for i,weaponData in ipairs(weaponAmmoTable["Rocket Ammo"]) do
+    if weaponName == weaponData[1] then
+      return "Rocket Ammo", weaponData[2]
+    end
+  end
+  return false
+end
+function getAttachOffsets(e1,e2) 
+	--thank you based glue resource
 	local px, py, pz = getElementPosition(e1)
 	local vx, vy, vz = getElementPosition(e2)
 	local sx = px - vx
@@ -242,7 +317,7 @@ function initVeh(eVeh) --TODO(80%): parenting for loot zones (loot frame will ha
 		the other 2/5 chance will spawn vehicles with random part amounts
 		
 	]]
-	--start extension inventory code --this will be modified
+	--start extension inventory code --this will be modified (maybe move to loot func)
 	local eVehExt,e,t,f,x = getElementData(eVeh, "Ext"),
 							getElementData(eVeh, "needengines"),
 							getElementData(eVeh, "needtires"),
@@ -418,8 +493,9 @@ function deathHelper(ePlr)
 				setTimer(destroyElement,1800000,1,corpse)
 			end,2000,1)
 end
-function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF "MAGIC" HAPPENS HERE
-	outputChatBox("creating '"..tostring(thingType).."'") --debug stuff
+function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF "MAGIC" HAPPENS HERE --it has to happen somewhere
+	---[[debug stuff
+	outputChatBox("creating '"..tostring(thingType).."'") --]]
 	local x,y,z = getElementPosition(ePlr)
 			  z = z-0.77
 	local _,_,r = getElementRotation(ePlr)
@@ -447,10 +523,18 @@ function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF "MA
 			setElementParent(tObj[2],tObj[1])
 	elseif thingType == "tent" then
 		msLifetime,bLoot = false,true
-		--do me
+		tObj[1] = createObject(3243,x,y,z,0,0,r)
+			setElementInterior(tObj[1],i)
+			setElementDimension(tObj[1],d)
+			setObjectScale(tObj[1],0.5)
+			setElementFrozen(tObj[1],true)
 	elseif thingType == "fence" then
 		msLifetime,bLoot = false,true
-		--do me
+		tObj[1] = createObject(983,x,y,z,0,0,r)
+			setElementInterior(tObj[1],i)
+			setElementDimension(tObj[1],d)
+			--setObjectScale(tObj[1],1)
+			setElementFrozen(tObj[1],true)
 	elseif thingType == "flare" then
 		msLifetime = 300000 --5 minutes
 		tObj[1] = createObject(354,x,y,z,0,0,r)
@@ -459,10 +543,10 @@ function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF "MA
 			setObjectScale(tObj[1],0.5)
 			setElementFrozen(tObj[1],true)
 	end
-	if eCon then
+	if eCon then --this is awesome code but its probably going to break stuff if we let people do it on anything
 		local px,py,pz,rx,ry,rz = getAttachOffsets(tObj[1],eCon)
 		attachElements(tObj[1],eCon,px,py,pz,rx,ry,rz)
-		if thingType == "fireplace" then attachElements(tObj[2],eCon,px,py,pz-0.77,rx,ry,rz) end
+		if thingType == "fireplace" then attachElements(tObj[2],eCon,px,py,pz-0.77,rx,ry,rz) end --anything made up of 2 objects or more will need a case down here
 		setElementParent(tObj[1],eCon)
 		if bLoot then createLootZone(tObj[1],thingType,true) end
 	elseif bLoot then
@@ -474,13 +558,13 @@ function createLootZone(e,zType,bAttach) --TODO(75%): pull/link/init inventories
 	local x,y,z = getElementPosition(e)
 	local eType = getElementType(e)
 	local zOff = -0.77
-	if (eType == "player") or (zType == "deadman") then
+	if (eType == "player") or (zType == "deadman") then --fixes coltube being in a weird place
 		z = z + zOff
 	end
-	local col = createColTube(x,y,z,1.75,2)--create coltube at e
-	setElementParent(col,e)--parent it to e
-	if (eType == "player") or (zType == "deadman") then
-		attachElements(col,e,0,0,zOff)--attach it
+	local col = createColTube(x,y,z,1.75,2)
+	setElementParent(col,e)
+	if (eType == "player") or (zType == "deadman") then --fixes coltube being in a weird place
+		attachElements(col,e,0,0,zOff)
 	elseif bAttach then
 		attachElements(col,e)
 	end
@@ -488,7 +572,7 @@ function createLootZone(e,zType,bAttach) --TODO(75%): pull/link/init inventories
 	return col
 end
 
---NEW HOOKS
+--NEW EVENTS
 function loginHandler(u,p,t) --DONE(100%)
 	if (not u) or (not p) or (not t) then
 		outputServerLog("blank login/try")
@@ -674,9 +758,36 @@ function medicHandler(item,target) --writeme(10%)
 end
 addEvent("onPlayerUseMedicObject",true)
 addEventHandler("onPlayerUseMedicObject", root, medicHandler)
-function rearmHandler(item,slot) --proto-me / writeme / research(0%)
+function rearmHandler(item,slot) --testme(??%)
 	if itemCheck(source, item) then 
-	
+		takeAllWeapons(source) 
+		local ammoData, weapID = getWeaponAmmoType(item) 
+		if getElementData(source, ammoData) <= 0 then
+			triggerClientEvent(source, "displayClientInfo", source, "Rearm", "You got no magazine for this weapon", 255, 22, 0)
+			return 
+		end
+		setElementData(source, "currentweapon_" .. slot, item)
+		local weapon = getElementData(source, "currentweapon_1")
+		if weapon then
+			local ammoData, weapID = getWeaponAmmoType(weapon)
+			giveWeapon(source, weapID, getElementData(source, ammoData), true)
+		end
+		local weapon = getElementData(source, "currentweapon_2")
+			if weapon then
+			local ammoData, weapID = getWeaponAmmoType(weapon)
+			giveWeapon(source, weapID, getElementData(source, ammoData), false)
+		end
+		local weapon = getElementData(source, "currentweapon_3")
+		if weapon then
+			local ammoData, weapID = getWeaponAmmoType(weapon)
+			giveWeapon(source, weapID, getElementData(source, ammoData), false)
+		end
+		if elementWeaponBack[source] then
+			detachElementFromBone(elementWeaponBack[source])
+			destroyElement(elementWeaponBack[source])
+			elementWeaponBack[source] = false
+		end
+		setPedSkin(getElementData(source, "skin"))
 	end
 end
 addEvent("onPlayerRearmWeapon",true)
@@ -698,7 +809,7 @@ addEventHandler("kilLDayZPlayer", root, killHandler)
 
 
 --HOOKS
-function loadMap(startedMap) --RELEASE: remove the train what the fuck are you thinking
+function loadMap(startedMap) --RELEASE: remove the train what the fuck are you doing stop getting distracted
 	mapRoot = getResourceRootElement(startedMap)
 	initAllVehicles()
 		--wait why is there a train here WHAT ARE YOU DOING
@@ -759,15 +870,87 @@ function handleTrafficLightsOutOfOrder() --i really like this thank you mtawiki
     end
 end
 setTimer(handleTrafficLightsOutOfOrder,1500,0)
-
-
+  --BEGIN: ALTERED marwin code
+function checkTemperature() --TODO: ADD MORE WEATHERS
+  for i,player in ipairs(getElementsByType("player")) do
+    if getElementData(player, "auth") then
+      local value = 0
+      if getWeather == 7 then
+        value = -0.1
+      elseif getWeather == 12 then
+        value = 0
+      elseif getWeather == 16 then
+        value = -0.4
+      elseif getWeather == 4 then
+        value = -0.1
+      end
+      local hour, minutes = getTime()
+      if hour >= 21 and hour <= 8 then
+        value = value - 0.05
+      end
+      addPlayerStats(player, "temperature", value)
+    end
+  end
+end
+setTimer(checkTemperature, 60000, 0)
+function checkTemperature2()
+  for i,player in ipairs(getElementsByType("player")) do
+    if getElementData(player, "auth") then
+      local value = 0
+      if isElementInWater(player) then
+        value = -0.1
+      end
+      if getControlState(player, "sprint") then
+        value = value + 0.005
+      end
+      addPlayerStats(player, "temperature", value)
+    end
+  end
+end
+setTimer(checkTemperature2, 10000, 0)
+function setHunger() --TODO: MAKE ME BETTER
+  for i,player in ipairs(getElementsByType("player")) do
+    if getElementData(player, "auth") then
+      local value = -1.5
+      addPlayerStats(player, "food", value)
+    end
+  end
+end
+setTimer(setHunger, 60000, 0)
+function setThirsty() --ME TOO
+  for i,player in ipairs(getElementsByType("player")) do
+    if getElementData(player, "auth") then
+      local value = -2
+      addPlayerStats(player, "thirst", value)
+    end
+  end
+end
+setTimer(setThirsty, 60000, 0)
+function checkThirsty()
+  for i,player in ipairs(getElementsByType("player")) do
+    if getElementData(player, "auth") then
+      local value = 0
+      if getControlState(player, "sprint") then
+        value = -0.1
+      end
+      addPlayerStats(player, "thirst", value)
+    end
+  end
+end
+setTimer(checkThirsty, 10000, 0)
+function checkHumanity()
+  for i,player in ipairs(getElementsByType("player")) do
+    if getElementData(player, "auth") and getElementData(player, "humanity") < 2500 then
+      addPlayerStats(player, "humanity", 30)
+    end
+    if getElementData(player, "humanity") > 2000 then
+      setElementData(player, "bandit", false)
+    end
+  end
+end
+setTimer(checkHumanity, 60000, 0)
+  --END
+  
 --[[debug stuff
-function pedWaste(tot,atk,wpn,bp,bStealth)
-	outputChatBox(tostring(source).." died. a="..tostring(atk).." w="..tostring(wpn).." bp="..tostring(bp).." s="..tostring(bStealth))
-end
-addEventHandler("onPedWasted",root,pedWaste)
-function plrDam(atk,wpn,bp,los)
-	outputChatBox(tostring(source).." dmg. a="..tostring(atk).." w="..tostring(wpn).." bp="..tostring(bp).." los="..tostring(los))
-end
-addEventHandler("onPlayerDamage",root,plrDam)
+
 --]]

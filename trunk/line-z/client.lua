@@ -4,14 +4,11 @@ GTA-DAYz / WASTELAND MOD
 COPYRIGHT DRLINE 2012 DO NOT STEAL LOL
 
 uses these fine resources: 
-	marwin's survivor system gui
+	marwin survivor system gui
 	bone_attach resource
 	glue resource
 	zday resource
 	betterWeather resource
-
-EVERYTHING IS ALL ABOUT FUN DONT TAKE LIFE SO SERIOUSLY GODDAMN
-
 ]]--
 
 --[[
@@ -19,7 +16,7 @@ EVERYTHING IS ALL ABOUT FUN DONT TAKE LIFE SO SERIOUSLY GODDAMN
 ----*			DayZ MTA Script client.lua					*----
 ----* HACKED												*----
 ----* BY													*----
-----* CHINESE				--TODO: CLEAN THIS SHIT UP		*----
+----* CHINESE				--TODO: redo everything 		*----
 ----*														*----
 #---------------------------------------------------------------#
 ]]
@@ -1173,7 +1170,7 @@ setTimer(showBlipGPS,500,0)
 --addEventHandler ( "onClientHUDRender", getRootElement(), showBlipGPS )
 ]]
 
----[[Support Chat
+--[[Support Chat
 supportWindow = guiCreateStaticImage(0.05,0.25,0.9,0.5,"client/image/scrollmenu_1.png",true)
 guiSetVisible(supportWindow,false)
 supportGridlist = guiCreateGridList ( 0.05,0.1,0.9,0.7,true,supportWindow)
@@ -1258,7 +1255,7 @@ addEventHandler("onSupportChatMessage", getRootElement(),outputSupportChat,true)
 --------------------------------------------------------------------
 ]]
 
----[[
+--[[
 local antiSpamTimer = {}
 function setAntiSpamActive()
 	if not isTimer(antiSpamTimer) then
