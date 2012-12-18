@@ -18,8 +18,9 @@ uses these fine resources:
 ----* BY													*----
 ----* CHINESE		--TODO: redo everything			 		*----
 ----*						organize this fucking shit		*----
-----*						im fucking going crazy trying	*----
-----*						to read this mess				*----
+----*						split into seperate files		*----
+----*						keep gui shit in one place		*----
+----*						keep logic shit in another		*----
 #---------------------------------------------------------------#
 ]]
 
@@ -167,8 +168,8 @@ function playerStatsCS()
 		showPlayerHudComponent ("radar",false)
 		showPlayerHudComponent ("money",false) 
 		showPlayerHudComponent ("health",false) 
-		--showPlayerHudComponent ("weapon",false) 
-		--showPlayerHudComponent ("ammo",false) 
+		--showPlayerHudComponent ("weapon",false) --ok we'll let them have their weapons
+		--showPlayerHudComponent ("ammo",false) --AND AMMO on screen (fucking casuals)
 		showPlayerHudComponent ("breath",false) 
 		if getElementData(localPlayer,"Map") >= 1  then
 			toggleControl ("radar",true)
@@ -181,9 +182,9 @@ function playerStatsCS()
 		end
 	end
 end
-setTimer(playerStatsCS,1000,0)
+setTimer(playerStatsCS,1000,0) --we do this EVERY SECOND (why)
 
-function playerZoom (key,keyState)
+function playerZoom (key,keyState) --FUTR: make these bindable (will need a commandhandler)
 	if key == "n" then
 		if getElementData(localPlayer,"Night Vision Goggles") > 0 then
 			if nightvision then
@@ -215,18 +216,18 @@ bindKey("i","down",playerZoom)
 --------------------------------------------------------
 --Player Stats										  --
 --------------------------------------------------------
-function getGroundMaterial(x, y, z)
+function getGroundMaterial(x, y, z) 
 	local hit, hitX, hitY, hitZ, hitElement, normalX, normalY, normalZ, material = processLineOfSight(x, y, z, x, y, z-10, true, false, false, true, false, false, false, false, nil)
 	return material
 end
 
-function isInBuilding(x, y, z)
+function isInBuilding(x, y, z) 
 	local hit, hitX, hitY, hitZ, hitElement, normalX, normalY, normalZ, material = processLineOfSight(x, y, z, x, y, z+10, true, false, false, true, false, false, false, false, nil)
 	if hit then return true end
 	return false
 end
 
-function isObjectAroundPlayer2 ( thePlayer, distance, height )
+function isObjectAroundPlayer2 ( thePlayer, distance, height ) 
 material_value = 0
  local x, y, z = getElementPosition( thePlayer )
  for i = math.random(0,360), 360, 1 do
@@ -417,7 +418,7 @@ function showDebugMonitor ()
 	local visible = guiGetVisible(statsWindows)
 	guiSetVisible(statsWindows,not visible)
 end
-addCommandHandler("debugMon", showDebugMonitor, false)
+addCommandHandler("debugMon", showDebugMonitor, false) --remove this bind eventually
 bindKey("F5", "down", "debugMon", "")
 
 function refreshDebugMonitor()
@@ -452,7 +453,7 @@ end
 end
 setTimer(refreshDebugMonitor,2000,0)
 
-weaponAmmoTable = { --concat this maybe
+weaponAmmoTable = { --going into master
 	["Pistol Ammo"] = {
 		{"Pistol",22},
 		{"Silenced Pistol",23},
@@ -490,7 +491,7 @@ weaponAmmoTable = { --concat this maybe
 	},
 }
 
-function getWeaponAmmoType (weaponName) --rewrite this, eventually
+function getWeaponAmmoType (weaponName) --FUTR: rewrite for master
 	for i,weaponData in ipairs(weaponAmmoTable["others"]) do
 		if weaponName == weaponData[1] then
 			return weaponData[1],weaponData[2]
@@ -528,7 +529,7 @@ function getWeaponAmmoType (weaponName) --rewrite this, eventually
 	end
 end
 
-damageTable = {
+damageTable = { --to: master
 {"M4",6722},
 {"Sniper Rifle",11552},
 {"Shotgun",2024},
@@ -549,7 +550,7 @@ damageTable = {
 {"Grenade",18000},
 }
 
-function getWeaponDamage (weapon)
+function getWeaponDamage (weapon) --FUTR: fix for master
 	for i,weapon2 in ipairs(damageTable) do
 		local t,weapon1 = getWeaponAmmoType(weapon2[1])
 		if weapon1 == weapon then
@@ -583,7 +584,7 @@ function playerGetDamageDayZ ( attacker, weapon, bodypart, loss )
 	elseif weapon == 63 or weapon == 19 then
 		setElementData(localPlayer,"blood",0)
 		if not getElementData(localPlayer,"isDead") then
-			triggerServerEvent("kilLDayZPlayer",localPlayer,attacker,headshot) --fix this
+			triggerServerEvent("kilLDayZPlayer",localPlayer,attacker,headshot) --fix this (i dunno what to fix?)
 		end
 	elseif weapon and weapon > 1 and attacker and getElementType(attacker) == "player" then
 		local number = math.random(1,8)
@@ -707,8 +708,8 @@ function checkBrokenbone()
 if getElementData(localPlayer,"auth") then
 	if getElementData(localPlayer,"brokenbone") then
 		if not isPedDucked(localPlayer) then
-			--setControlState ("walk",false)
-			--setControlState ("crouch",true)
+			--setControlState ("walk",false) --oh god forced crouch for broken bones
+			--setControlState ("crouch",true) --please never enable this
 		end
 		toggleControl ( "jump", false )
 		toggleControl ( "sprint", false )
@@ -722,7 +723,7 @@ setTimer(checkBrokenbone,1500,0)
 
 function setPain()
 if getElementData(localPlayer,"auth") then
-	if getElementData(localPlayer,"pain") then
+	if getElementData(localPlayer,"pain") then --this is horrible fix this so its not so GAY
 		local x,y,z = getElementPosition(localPlayer)
 		createExplosion (x,y,z+15,8,false,1.0,false)
 		local x, y, z, lx, ly, lz = getCameraMatrix() -- Get the current location and lookat of camera
@@ -744,7 +745,7 @@ end
 setTimer(checkCold,3000,0)
 
 function setCold()
-	if getElementData(localPlayer,"auth") then
+	if getElementData(localPlayer,"auth") then --again deGAY this shit
 		if getElementData(localPlayer,"cold") then
 			local x,y,z = getElementPosition(localPlayer)
 			createExplosion (x,y,z+15,8,false,0.5,false)
@@ -814,7 +815,7 @@ function setVisibility()
 end
 setTimer(setVisibility,100,0)
 
-function debugJump()
+function debugJump() --why
 	if getControlState("jump") then
 		setElementData(localPlayer,"jumping",true)
 		setTimer(debugJump2,650,1)
@@ -822,11 +823,11 @@ function debugJump()
 end
 setTimer(debugJump,100,0)
 
-function debugJump2()
+function debugJump2() --why2
 	setElementData(localPlayer,"jumping",false)
 end
 
-weaponNoiseTable = {
+weaponNoiseTable = { --god everything is everywhere (re)MOVE ME
 {22,20},
 {23,0},
 {24,60},
@@ -857,7 +858,7 @@ function getWeaponNoise(weapon)
 	return 0
 end
 
-function debugShooting()
+function debugShooting() --more why
 if getControlState("fire") then
 	local weapon = getPedWeapon(localPlayer)
 	local noise = getWeaponNoise(weapon) or 0
@@ -870,7 +871,7 @@ end
 end
 setTimer(debugShooting,100,0)
 
-function debugShooting2()
+function debugShooting2() --more why2
 	setElementData(localPlayer,"shooting",0)
 	shootTimer = false
 end
@@ -918,7 +919,7 @@ setTimer(checkZombies3,500,0)
 fading = 0
 fading2 = "up"
 local screenWidth,screenHeight = guiGetScreenSize()
-function updateIcons ()
+function updateIcons () --MAGIC MAGIC MAGIC MAGIC MAGIC
 if getElementData(localPlayer,"auth") then
 	--fading
 	if fading >= 0 and fading2 == "up" then
@@ -1137,7 +1138,7 @@ function showWhiteScreen ( attacker, weapon, bodypart )
 end
 addEventHandler ( "onClientPlayerDamage", localPlayer, showWhiteScreen )
 
---[[
+--[[ why this is commented out ill never know; maybe i should FIGURE IT OUT
 function destroyBlipGPS ()
 local blips = getElementsByType("blip")
 	for index, blip in ipairs(blips) do
@@ -1172,7 +1173,7 @@ setTimer(showBlipGPS,500,0)
 --addEventHandler ( "onClientHUDRender", getRootElement(), showBlipGPS )
 ]]
 
---[[Support Chat
+--[[Support Chat (no support for now)
 supportWindow = guiCreateStaticImage(0.05,0.25,0.9,0.5,"client/image/scrollmenu_1.png",true)
 guiSetVisible(supportWindow,false)
 supportGridlist = guiCreateGridList ( 0.05,0.1,0.9,0.7,true,supportWindow)
@@ -1379,7 +1380,7 @@ addEventHandler( "onClientPlayerQuit", getRootElement(), onQuitGame )
 
 yA = 0
 local screenWidth,screenHeight = guiGetScreenSize()
-function scoreBoard ()
+function scoreBoard () --MORE MAGIC 
 if getKeyState( "tab" ) == false then return end
 if getElementData(localPlayer,"auth") then
 local offset = dxGetFontHeight(1.55,"default-bold")
@@ -1481,7 +1482,7 @@ addEventHandler ( "onClientRender", getRootElement(), scoreBoard )
 
 
 
---Vehicles In Water
+--Vehicles In Water (i dunno)
 function checkVehicleInWaterClient ()
 vehiclesInWater = {}
 	for i,veh in ipairs(getElementsByType("vehicle")) do
@@ -1503,7 +1504,7 @@ function updatePlayTime()
 end
 setTimer(updatePlayTime, 60000, 0)
 
-bindKey("z", "down", "chatbox", "radiochat" )
+bindKey("z", "down", "chatbox", "radiochat" ) --TODO: handle radio chat on server
 
 
 local pingFails = 0
@@ -1524,4 +1525,4 @@ end
 setTimer(playerPingCheck,4000,0)
 
 --debug stuff
-setDevelopmentMode(true)
+setDevelopmentMode(true) --eventually remove me

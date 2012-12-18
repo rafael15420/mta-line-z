@@ -10,17 +10,23 @@ uses these fine resources:
 	zday resource (maybe)
 	betterWeather resource
 
-TODO: 	finish item funcs
-		finish loot funcs
-		write item spawning code (pull spawns from map data [specs TBA])
-		backpacks
-			bone-attach
-		zombies
+TODO: 	finish item funcs (0%; still needs to be done [STEALSTEALSTEAL])
+		finish loot funcs (working on it)
+		write item spawning code (pull spawns from map data [generic spawns? or specific] [also:STEALSTEALSTEAL])
+		backpacks (more STEALING [laziness])
+			bone-attach (just have to integrate)
+		zombies (lol @ this being the last thing)
 ]]--
 
 --VARIABLES YO
 					-- 1,   2,   3,     4,  5,    6
-local invMaster = { --id,init,name,weight,dmg,gtaID
+local invMaster = { --id,init,name,weight,dmg,gtaID 
+	--THE PLAN: both client and server have a master inventory list of all values for inventory items.
+	--that way simple standardized calls to this list can be made. item 37 will always be item 37 etc.
+	--NAMES AND VALUES WILL BE ABLE TO BE CHANGED WITHOUT FUCKING EVERYTHING UP. THIS IS GOOD. 
+	--hell i may just make the client download the table at join (THAT WAY THERES ONLY 1 COPY. NO DESYNCS)
+	--i may even nest / alter the list protocol a bit. right now its managable(ish)
+	--THIS IS ALL WAITING ON CLIENT.LUA STANDARDIZATION / UPDATE  G E T  T O  W O R K
 	--prim weps
 	{1,0,"M4",3,6722,31}, 
 	{2,0,"Sniper Rifle",3,7522,34},
@@ -97,7 +103,7 @@ local invMaster = { --id,init,name,weight,dmg,gtaID
 	{67,0,"Binocular",1},
 	{68,0,"Radio Device",1},
 }
-local initInvTab = { --THIS IS GONNA GO
+local initInvTab = { --THIS IS GONNA GO (already in master)
 	["M4"] = 0,
 	["Sniper Rifle"] = 0,
 	["Shotgun"] = 0,
@@ -167,7 +173,7 @@ local initInvTab = { --THIS IS GONNA GO
 	["Binocular"] = 1,
 	["Radio Device"] = 1,
 }
-local initPlrTab = { --extra settings for players
+local initPlrTab = { --extra settings for players --going into master
 	["volume"] = 0,
 	["visibly"] = 0,
 	["brokenbone"] = false,
@@ -188,13 +194,13 @@ local initPlrTab = { --extra settings for players
 	["isDead"] = false,
 	["pain"] = false
 }
-local skinTable = { --skinTable[itemName][#] = { skinID, banditskinID } --add new skins here please --PROBABLY GONNA GO
+local skinTable = { --skinTable[itemName][#] = { skinID, banditskinID } --going into master
 	["Army Skin"] = {287,288},
 	["Civilian Skin"] = {179,180},
 	["Standart Skin"] = {73,288},
 	["Sniper Skin"] = {285,285}
 }
-local weaponAmmoTable = {
+local weaponAmmoTable = { --this will go into master aswell
 	["Pistol Ammo"] = {
 		{"Pistol", 22}, 
 		{"Silenced Pistol", 23}, 
@@ -386,8 +392,8 @@ end
 function loadPlrInv(ePlr) --FUTR: update to work with invMaster
 	local tempTab = {}
 	local usrAcct = getPlayerAccount(ePlr)
-	local sav = getAccountData(usrAcct, "line-z.sav")
-	if sav == 1 then
+	local sav = getAccountData(usrAcct, "line-z.sav") --lets access the db AGAIN
+	if sav == 1 then --so wait if they have no save dont try and load? BRILLIANT
 		for k,_ in pairs(initInvTab) do
 			tempTab[k] = getAccountData(usrAcct, "line-z.inv_"..k)
 		end
@@ -396,32 +402,17 @@ function loadPlrInv(ePlr) --FUTR: update to work with invMaster
 		end
 	initInv(ePlr, tempTab)
 	end
-	--[[OLDCODE										--setAccountData cant handle large shit
-	local usrInv = getAccountData(usrAcct,"line-z.inv")
-	jasonTemp = fromJSON(usrInv)
-	initInv(ePlr, jasonTemp) ]]
 end
-function savePlrInv(ePlr) --FUTR: update to work with invMaster
+function savePlrInv(ePlr) --FUTR: update to work with invMaster | maybe make a seperate inventory.db
 	local usrAcct = getPlayerAccount(ePlr)
-	for k,_ in pairs(initInvTab) do
-		local edata = getElementData(ePlr,k)
-		setAccountData(usrAcct, "line-z.inv_"..k, edata)
+	for k,_ in pairs(initInvTab) do --each inventory item gets a db entry, why? because it wouldnt let me store a whole table of items RIP
+		local edata = getElementData(ePlr,k) --todo: figure out how to store a big table of items
+		setAccountData(usrAcct, "line-z.inv_"..k, edata) --todo: figure out sqlite and DO MY OWN DATABASE QUERIES
 	end
 	for k,_ in pairs(initPlrTab) do
 		local edata = getElementData(ePlr,k)
 		setAccountData(usrAcct, "line-z.inv_"..k, edata)
 	end
-	--[[OLDCODE										
-	local invSave = {} 							
-	for k,_ in pairs(initInvTab) do
-		invSave[k] = getElementData(ePlr,k)
-	end
-	for k,_ in pairs(initPlrTab) do
-		invSave[k] = getElementData(ePlr,k)
-	end
-	local jason = toJSON(invSave) 					--this way seems efficient but it doesnt work what a shame
-	outputServerLog("jason: "..tostring(jason)) 	--it doesnt work because
-	setAccountData(usrAcct, "line-z.inv", jason) 	--jason is too long ? ]]
 end
 function savePlrSpn(ePlr) 
 	local x,y,z = getElementPosition(ePlr)
@@ -434,7 +425,7 @@ function savePlrSpn(ePlr)
 	}
 	setAccountData(getPlayerAccount(ePlr), "line-z.spawn", toJSON(spawn))
 end
-function randomSpawn() --FUTR: add spawngroups
+function randomSpawn() --FUTR: add spawngroups (for randomization purposes)
 	local spawntab = getElementsByType("spawnpoint", mapRoot)
 	local spawn = spawntab[math.random(1,table.maxn(spawntab))]
 	local x,y,z,r,m,i,d = getElementData(spawn,"posX"),
@@ -475,7 +466,7 @@ function skinIDtoName(sID)
 		end
 	end
 end
-function deathHelper(ePlr)
+function deathHelper(ePlr) --this is incredibly stupid i dont know why i moved all this here
 	local x,y,z = getElementPosition(ePlr) 
 	local _,_,r = getElementRotation(ePlr)
 	local m,i,d,eCon = getElementModel(ePlr),
@@ -486,21 +477,22 @@ function deathHelper(ePlr)
 	setElementInterior(corpse,i)
 	setElementDimension(corpse,d)
 	killPed(corpse)
-	setTimer(function()
+	--done setting up the corpse now:
+	setTimer(function() --after 2 seconds swap dead player with dead corpseped (just like magic noone will EVER KNOW)
 				spawnPlayer(ePlr,0,0,0,0,73,0,1)
 				setElementFrozen(ePlr,true)
 				setElementPosition(corpse,x,y,z)
 				if eCon then
-					attachElements(corpse,eCon,getAttachOffsets(corpse,eCon))
+					attachElements(corpse,eCon,getAttachOffsets(corpse,eCon)) 
 					setElementParent(corpse,eCon)
 				end
-				local lz = createLootZone(corpse,"deadman",true)
+				local lz = createLootZone(corpse,"deadman",true) --create "deadman" zone
 				setElementData(lz,"playername",getPlayerName(ePlr))
 				local hr,mt = getTime()
-				setElementData(lz,"deadreason","It looks like they died at around "..hr..":"..math.random(mt-3,mt+3))
+				setElementData(lz,"deadreason","It looks like they died at around "..hr..":"..math.random(mt-3,mt+3)) --APPROX TIME
 				initPlayer(ePlr)
 				savePlrInv(ePlr)
-				setTimer(destroyElement,1800000,1,corpse)
+				setTimer(destroyElement,1800000,1,corpse) --30 minutes
 			end,2000,1)
 end
 function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF "MAGIC" HAPPENS HERE --it has to happen somewhere
@@ -564,7 +556,7 @@ function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF "MA
 	end
 	if msLifetime then setTimer(destroyElement,msLifetime,1,tObj[1]) end
 end
-function createLootZone(e,zType,bAttach) --TODO(75%): pull/link/init inventories / make it work with vehicles / item loot zones
+function createLootZone(e,zType,bAttach) --TODO(75%): pull/link/init OLDINV (deadman) / make it work with vehicles(NEW PLANS) / item loot zones(TBA)
 	local x,y,z = getElementPosition(e)
 	local eType = getElementType(e)
 	local zOff = -0.77
@@ -582,27 +574,27 @@ function createLootZone(e,zType,bAttach) --TODO(75%): pull/link/init inventories
 	return col
 end
 
---NEW EVENTS
-function loginHandler(u,p,t) --DONE(100%)
-	if (not u) or (not p) or (not t) then
+--NEW EVENTS | FUTR: combine thing stuff into thingHandler
+function loginHandler(u,p,t) --DONE(99%) EVENTUALLY SS THE TRY CHECKS
+	if (not u) or (not p) or (not t) then --for safety
 		outputServerLog("blank login/try")
 		outputServerLog("THIS SHOULD NOT HAPPEN")
 		cancelEvent()
 		return
 	end
-	u = string.lower(u)
-	if (t >=300) then
+	u = string.lower(u) --all usernames will be lowercased to prevent stupid duplicates
+	if (t >=300) then --THIS WILL BE MADE SERVERSIDE WHEN I CARE ENOUGH TO DO IT
 		kickPlayer(client, "failed to login")
 		cancelEvent()
 		return
 	end
-	if (not client) then
-		outputServerLog("non client caller?! WHATS UP WITH THAT")
+	if (not client) then --again this is for safety i want this to NEVER BREAK EVER
+		outputServerLog("non client caller?! WHATS UP WITH THAT") 
 		cancelEvent()
 		return
 	end
-	local usrAcct = getAccount(u)
-	if (not usrAcct) then --registration handler
+	local usrAcct = getAccount(u) --ARE THEY REGISTERED?
+	if (not usrAcct) then --register them
 		outputServerLog("NEW USER: " .. tostring(u))
 		usrAcct = addAccount(u,p)
 		if (not usrAcct) then --CAUTIOUS DOUBLE CHECKING WON THE WAR
@@ -614,31 +606,32 @@ function loginHandler(u,p,t) --DONE(100%)
 		local spawn = toJSON(randomSpawn())
 		setAccountData(usrAcct, "line-z.spawn", spawn)
 	end
-	usrAcct = getAccount(u,p)
-	if (not usrAcct) then --incorrect password handler
+	usrAcct = getAccount(u,p) --DID THEY TYPE THE CORRECT PASS?
+	if (not usrAcct) then --haha no.
 		outputServerLog("INCORRECT PASS: " .. tostring(u))
-		triggerClientEvent(client, "showInvalEv", root)
+		triggerClientEvent(client, "showInvalEv", root) --send em the message
+		--eventually have a serverside tick of login tries; having the client do it is stupid
 		cancelEvent() 
 		return
 	end
-	triggerClientEvent(client, "showLoginEv", root, false)
+	triggerClientEvent(client, "showLoginEv", root, false) --ok let them in
 	logIn(client,usrAcct,p)
-	setElementData(client, "auth", 1)
-	local sav = getAccountData(usrAcct, "line-z.sav")
-	if sav == 0 or not sav then
-		local spawn = toJSON(randomSpawn())
-		setAccountData(usrAcct, "line-z.spawn", spawn)
-		outputServerLog("what the fuck is going on")
+	setElementData(client, "auth", 1) --they are now authorized to play the game
+	local sav = getAccountData(usrAcct, "line-z.sav") --database checking: HAS THEIR INFO BEEN PREVIOUSLY SAVED
+	if sav == 0 or not sav then -- no 
+		local spawn = toJSON(randomSpawn()) --make them a new spawn
+		setAccountData(usrAcct, "line-z.spawn", spawn) --save the spawn
+		outputServerLog("what the fuck is going on") --figure out whats going on later
 	end
-	initPlayer(client)
-	loadPlrInv(client)
-	setAccountData(usrAcct, "line-z.sav", 0)
-	spawnPlr(client) 
-	outputChatBox("Welcome to DIE", client)
+	initPlayer(client) --initialize OLDINV (this is getting removed/updated)
+	loadPlrInv(client) --load saved inv (todo: NEW PLAYERS WOULD GET *random* ITEMS HERE)
+	setAccountData(usrAcct, "line-z.sav", 0) --PLAYER INVENTORY IS NOW UNSAFE; SERVER GOES DOWN THEYRE FUCKED (unless the db doesnt save)
+	spawnPlr(client) --WELCOME TO THE WASTELAND
+	outputChatBox("Welcome to DIE", client) --PREPARE TO DIE (and stop wasting time making stupid useless comments)
 end
 addEvent("onLoginTry", true)
 addEventHandler("onLoginTry", root, loginHandler)
-function rcsHandler(item,prop) --DONE(100%) FUTR: update to work with invMaster
+function rcsHandler(item,prop) --DONE(99%) FUTR: update to work with invMaster | stays
 	local amt = itemCheck(source, item)
 	if amt then
 		if item == invMaster[27][3] or item == invMaster[32][3] then
@@ -675,7 +668,7 @@ function rcsHandler(item,prop) --DONE(100%) FUTR: update to work with invMaster
 end
 addEvent("onPlayerRequestChangingStats",true)
 addEventHandler("onPlayerRequestChangingStats", root, rcsHandler)
-function skinHandler(item) --DONE(100%) FUTR: update to work with invMaster
+function skinHandler(item) --DONE(99%) FUTR: update to work with invMaster | stays
 	local amt = itemCheck(source, item)
 	if amt then 
 		local oldName,newID = skinIDtoName(getElementModel(source)),
@@ -692,7 +685,7 @@ function skinHandler(item) --DONE(100%) FUTR: update to work with invMaster
 end
 addEvent("onPlayerChangeSkin",true)
 addEventHandler("onPlayerChangeSkin", root, skinHandler)
-function refillHandler(item) --DONE(100%) FUTR: update to work with invMaster
+function refillHandler(item) --DONE(99%) FUTR: update to work with invMaster | stays
 	local amt = itemCheck(source, item)
 	if amt then 
 		local item2 = invMaster[27][3]
@@ -707,7 +700,7 @@ function refillHandler(item) --DONE(100%) FUTR: update to work with invMaster
 end
 addEvent("onPlayerRefillWaterBottle",true)
 addEventHandler("onPlayerRefillWaterBottle", root, refillHandler)
-function tentHandler(item) --DONE(100%) FUTR: update to work with invMaster
+function tentHandler(item) --DONE(99%) FUTR: update to work with invMaster | goes
 	local amt = itemCheck(source, item)
 	if amt then 
 		setElementData(source, item, amt-1)
@@ -717,7 +710,7 @@ function tentHandler(item) --DONE(100%) FUTR: update to work with invMaster
 end
 addEvent("onPlayerPitchATent",true)
 addEventHandler("onPlayerPitchATent", root, tentHandler)
-function fenceHandler(item) --DONE(100%) FUTR: update to work with invMaster
+function fenceHandler(item) --DONE(99%) FUTR: update to work with invMaster | goes
 	local amt = itemCheck(source, item)
 	if amt then 
 		setElementData(source, item, amt-1)
@@ -727,7 +720,7 @@ function fenceHandler(item) --DONE(100%) FUTR: update to work with invMaster
 end
 addEvent("onPlayerBuildAWireFence",true)
 addEventHandler("onPlayerBuildAWireFence", root, fenceHandler)
-function flareHandler(item) --DONE(100%) FUTR: update to work with invMaster
+function flareHandler(item) --DONE(99%) FUTR: update to work with invMaster | goes
 	local amt = itemCheck(source, item)
 	if amt then 
 		setElementData(source, item, amt-1)
@@ -737,7 +730,7 @@ function flareHandler(item) --DONE(100%) FUTR: update to work with invMaster
 end
 addEvent("onPlayerPlaceRoadflare",true)
 addEventHandler("onPlayerPlaceRoadflare", root, flareHandler)
-function fireHandler(item) --DONE(100%) FUTR: update to work with invMaster
+function fireHandler(item) --DONE(99%) FUTR: update to work with invMaster | goes
 	local amt = itemCheck(source, item) 
 	if amt then 
 		local item2 = "Wood"
@@ -751,7 +744,7 @@ function fireHandler(item) --DONE(100%) FUTR: update to work with invMaster
 end
 addEvent("onPlayerMakeAFire",true)
 addEventHandler("onPlayerMakeAFire", root, fireHandler)
-function medicHandler(item,target) --writeme(10%)
+function medicHandler(item,target) --writeme(10%) | stays
 	local amt = itemCheck(source, item)
 	if amt then 
 		if not target then
@@ -768,7 +761,7 @@ function medicHandler(item,target) --writeme(10%)
 end
 addEvent("onPlayerUseMedicObject",true)
 addEventHandler("onPlayerUseMedicObject", root, medicHandler)
-function rearmHandler(item,slot) --testme(??%)
+function rearmHandler(item,slot) --testme(??%) FUTR: update to work with invMaster | stays | NEEDS BONE ATTACH
 	if itemCheck(source, item) then 
 		takeAllWeapons(source) 
 		local ammoData, weapID = getWeaponAmmoType(item) 
@@ -802,7 +795,7 @@ function rearmHandler(item,slot) --testme(??%)
 end
 addEvent("onPlayerRearmWeapon",true)
 addEventHandler("onPlayerRearmWeapon", root, medicHandler)
-function killHandler(attacker,headshot,wpnName) --DONE(100%)
+function killHandler(attacker,headshot,wpnName) --DONE(100%) | stays
 	if not attacker then
 		attacker = source
 	end
@@ -829,24 +822,24 @@ function loadMap(startedMap) --RELEASE: remove the train what the fuck are you d
 end
 addEventHandler("onGamemodeMapStart", root, loadMap)
 function joinHandler()
-	if table.maxn(getElementsByType("player")) == 1 then
+	if table.maxn(getElementsByType("player")) == 1 then --when the server has 0 people in it, all sim stops; this resets clock settings when someone joins
 		setMinuteDuration(15000)
 	end	
 end
 addEventHandler("onPlayerJoin", root, joinHandler)
 function quitHandler() 
 	local usrAcct = getPlayerAccount(source)
-	if isGuestAccount(usrAcct) then
+	if isGuestAccount(usrAcct) then --they joined; they quit before logging in; RIP
 		outputServerLog("POO")
 		return
 	end
-	setAccountData(usrAcct, "line-z.sav", 1)
 	savePlrSpn(source)
 	savePlrInv(source)	
-	logOut(source)
+	setAccountData(usrAcct, "line-z.sav", 1) --PLAYER INVENTORY IS NOW SAFE
+	logOut(source) --GOODBYE
 end
 addEventHandler("onPlayerQuit", root, quitHandler)
-function deathHandler(tot,atk,wpn,bp,bStealth) 
+function deathHandler(tot,atk,wpn,bp,bStealth) --this handles ALL DEATHS EVEN STEALTH KILLS NO MORE BUGS
 	local usrAcct,wpnID,spawn,bpart = 
 			getPlayerAccount(source),
 			0,
@@ -856,10 +849,11 @@ function deathHandler(tot,atk,wpn,bp,bStealth)
 	triggerClientEvent(source,"onClientPlayerDeathInfo",root)
 	setAccountData(usrAcct, "line-z.spawn", spawn)
 	deathHelper(source)
-	setTimer(spawnPlr,7050,1,source)
+	setTimer(spawnPlr,7050,1,source) --arbitrary numbers
 end
 addEventHandler("onPlayerWasted", root, deathHandler)
 function exitHandler()
+	--kicking all players isnt a problem because it calls quithandler on all of them NOICE
 	local players = getElementsByType("player")
 	for k,v in ipairs(players) do
 		kickPlayer (v, "server shutting down.")
@@ -879,7 +873,7 @@ function handleTrafficLightsOutOfOrder() --i really like this thank you mtawiki
         setTrafficLightState(9)
     end
 end
-setTimer(handleTrafficLightsOutOfOrder,1500,0)
+setTimer(handleTrafficLightsOutOfOrder,3000,0)
   --BEGIN: ALTERED marwin code
 function checkTemperature() --TODO: ADD MORE WEATHERS
   for i,player in ipairs(getElementsByType("player")) do
@@ -918,7 +912,7 @@ function checkTemperature2()
   end
 end
 setTimer(checkTemperature2, 10000, 0)
-function setHunger() --TODO: MAKE ME BETTER 
+function setHunger() --TODO: MAKE ME BETTER (how?)
   for i,player in ipairs(getElementsByType("player")) do
     if getElementData(player, "auth") then
       local value = -1.5
@@ -926,8 +920,8 @@ function setHunger() --TODO: MAKE ME BETTER
     end
   end
 end
-setTimer(setHunger, 60000, 0)
-function setThirsty() --ME TOO
+setTimer(setHunger, 61258, 0)
+function setThirsty() --ME TOO (how?)
   for i,player in ipairs(getElementsByType("player")) do
     if getElementData(player, "auth") then
       local value = -2
@@ -935,7 +929,7 @@ function setThirsty() --ME TOO
     end
   end
 end
-setTimer(setThirsty, 60000, 0)
+setTimer(setThirsty, 59379, 0)
 function checkThirsty()
   for i,player in ipairs(getElementsByType("player")) do
     if getElementData(player, "auth") then
@@ -947,7 +941,7 @@ function checkThirsty()
     end
   end
 end
-setTimer(checkThirsty, 10000, 0)
+setTimer(checkThirsty, 9892, 0)
 function checkHumanity()
   for i,player in ipairs(getElementsByType("player")) do
     if getElementData(player, "auth") and getElementData(player, "humanity") < 2500 then
@@ -958,7 +952,7 @@ function checkHumanity()
     end
   end
 end
-setTimer(checkHumanity, 60000, 0)
+setTimer(checkHumanity, 65084, 0)
   --END
   
 --[[debug stuff
