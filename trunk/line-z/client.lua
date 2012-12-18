@@ -16,8 +16,10 @@ uses these fine resources:
 ----*			DayZ MTA Script client.lua					*----
 ----* HACKED												*----
 ----* BY													*----
-----* CHINESE				--TODO: redo everything 		*----
-----*														*----
+----* CHINESE		--TODO: redo everything			 		*----
+----*						organize this fucking shit		*----
+----*						im fucking going crazy trying	*----
+----*						to read this mess				*----
 #---------------------------------------------------------------#
 ]]
 
@@ -25,9 +27,9 @@ uses these fine resources:
 
 --Survivor Skins
 --Sniper
-snipertxd = engineLoadTXD ("client/player/sniper.txd");
+local snipertxd = engineLoadTXD ("client/player/sniper.txd");
 engineImportTXD (snipertxd, 285);
-sniperdff = engineLoadDFF ("client/player/sniper.dff", 285);
+local sniperdff = engineLoadDFF ("client/player/sniper.dff", 285);
 engineReplaceModel (sniperdff, 285);
 --Civilian
 snipertxd = engineLoadTXD ("client/player/civilian.txd");
@@ -53,9 +55,9 @@ engineReplaceModel (sniperdff, 73);
 
 --Items
 
-itemTXD = engineLoadTXD ("client/item/army_clothes.txd");
+local itemTXD = engineLoadTXD ("client/item/army_clothes.txd");
 engineImportTXD (itemTXD, 1247);
-itemDFF = engineLoadDFF ("client/item/army_clothes.dff", 1247);
+local itemDFF = engineLoadDFF ("client/item/army_clothes.dff", 1247);
 engineReplaceModel (itemDFF, 1247);
 
 itemTXD = engineLoadTXD ("client/item/sniper_clothes.txd");
