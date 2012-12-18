@@ -299,16 +299,23 @@ function getAttachOffsets(e1,e2)
 	local rotZ = rotpZ - rotvZ	
 	return offX,offY,offZ,rotX,rotY,rotZ
 end
-function initVeh(eVeh) --TODO(80%): parenting for loot zones (loot frame will have a func) CONSIDER THE FOLLOWING: Ext is probably the loot zone
-	--[[ vehicle extension inventory explaination (tires/fuel/engine/etc)
-	
-		this function is designed to be called on individual vehicles
+function initVeh(eVeh) --TODO(80%): NEW PLANS:
+	--[[THESE ARE THE NEW PLANS
+		oh baby		
+		call me
+
+		i will lootzone a vehicle
 		
-		maximum values are pulled from .map data
-	
-		ill probably keep it this way, having 2 elements per vehicle isnt causing any problems ...yet
+		i will set up OLDINV for that vehicle on that zone (OLDINV is my newname for the old inventory system isnt that clever)
 		
-	this is how the spawn logic works:
+		thats it (remember to make way for NEWINV aka invMaster)
+			
+		function is STILL designed to be called on individual vehicles
+		
+		maximum values are pulled from .map data (table these, custom vehicle ent is fucking up editor)
+	--]]
+	
+	--[[ this is how the spawn logic works:
 		2/5 chance to spawn vehicle with only one zero'd out part (either fuel/tires/or engine)
 			the other parts would have random amounts, but atleast 1.
 			
@@ -316,44 +323,47 @@ function initVeh(eVeh) --TODO(80%): parenting for loot zones (loot frame will ha
 		
 		the other 2/5 chance will spawn vehicles with random part amounts
 		
-	]]
-	--start extension inventory code --this will be modified (maybe move to loot func)
+		CHANCES OF A FULLY LOADED VEHICLE ARE VERY SLIM		
+	--]]
+	
+	
+	--todo: dig max values from table, setElementData
 	local eVehExt,e,t,f,x = getElementData(eVeh, "Ext"),
-							getElementData(eVeh, "needengines"),
+							getElementData(eVeh, "needengines"), 
 							getElementData(eVeh, "needtires"),
 							getElementData(eVeh, "maxfuel"),
-							math.random(0,4)
+							math.random(0,4) --set up how loaded the vehicle will be
 	if (not eVehExt) then
 		eVehExt = createElement("vehExt", getElementID(eVeh).."_ex")
 		setElementData(eVeh, "Ext", eVehExt)
 	end
-	if (x <= 1) then --vehicle spawn logic
+	--vehicle spawn logic (maybe increase thresholds a bit; i dunno it seems random enough)
+	if (x <= 1) then --partially loaded vehicles
 		x = math.random(0,2)
-		if (x == 0) then
+		if (x == 0) then --no fuel
 			setElementData(eVehExt, "fuel", 0)
-			setElementData(eVehExt, "Engine_inVehicle", math.random(1,e))
-			setElementData(eVehExt, "Tire_inVehicle", math.random(1,t))
-		elseif (x == 1) then
-			setElementData(eVehExt, "fuel", math.random(10,f))
-			setElementData(eVehExt, "Engine_inVehicle", 0)
-			setElementData(eVehExt, "Tire_inVehicle", math.random(1,t))
-		elseif (x == 2) then
-			setElementData(eVehExt, "fuel", math.random(10,f))
-			setElementData(eVehExt, "Engine_inVehicle", math.random(1,e))
+			setElementData(eVehExt, "Engine_inVehicle", math.random(0,e)) --there will always be a chance of having no engine
+			setElementData(eVehExt, "Tire_inVehicle", math.random(1,t)) --less of a tire chance since they burned up all the gas
+		elseif (x == 1) then --YOU GET AN ENGINE; low fuel / but tires
+			setElementData(eVehExt, "fuel", math.random(1,15))
+			setElementData(eVehExt, "Engine_inVehicle", 1)
+			setElementData(eVehExt, "Tire_inVehicle", math.random(2,t))
+		elseif (x == 2) then --no fucking tires / guaranteed some fuel
+			setElementData(eVehExt, "fuel", math.random(10,30))
+			setElementData(eVehExt, "Engine_inVehicle", math.random(0,e))
 			setElementData(eVehExt, "Tire_inVehicle", 0)
 		end
-	elseif (x == 2) then
+	elseif (x == 2) then --YOU GET NOTHING YOU LOSE or well you get to have a vehicle with no parts
 		setElementData(eVehExt, "fuel", 0)
 		setElementData(eVehExt, "Engine_inVehicle", 0)
 		setElementData(eVehExt, "Tire_inVehicle", 0)
-	else
-		setElementData(eVehExt, "fuel", math.random(0,10))
+	else --and all the rest
+		setElementData(eVehExt, "fuel", math.random(0,f))
 		setElementData(eVehExt, "Engine_inVehicle", math.random(0,e))
 		setElementData(eVehExt, "Tire_inVehicle", math.random(0,t))
 	end
 	toggleVehicleRespawn(eVeh, false)
-	--end of extension inventory code
-	initInv(eVeh) --init local inv
+	initInv(eVeh)
 end
 function initAllVehicles() 
 	local vehs = getElementsByType("vehicle", mapRoot)
@@ -499,19 +509,19 @@ function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF "MA
 	local x,y,z = getElementPosition(ePlr)
 			  z = z-0.77
 	local _,_,r = getElementRotation(ePlr)
-	local i,d,eCon,msLifetime,bLoot,tObj = getElementInterior(ePlr),
-										   getElementDimension(ePlr),
-										   getPedContactElement(ePlr),
+	local i,d,eCon,msLifetime,bLoot,tObj = getElementInterior(ePlr), --interior of player
+										   getElementDimension(ePlr), --dimension of player
+										   getPedContactElement(ePlr), --we standin on anything?
 										   900000, --15 minutes
-										   false,
-										   {}
-	if thingType == "fireplace" then
+										   false, --default shit wont have an interact zone (which is what i should call them instead of lootzones but w/e)
+										   {} --table of new objects
+	if thingType == "fireplace" then --todo: register fireplaces to players; make sure they can only have ONE (or two? who knows ill do this later)
 		bLoot = true
-		tObj[1] = createObject(1463,x,y,z,0,0,r)
+		tObj[1] = createObject(1463,x,y,z,0,0,r) --todo: createObject wrapper that does interiors and dimensions 
 			setElementInterior(tObj[1],i)
 			setElementDimension(tObj[1],d)
 			setElementFrozen(tObj[1],true)
-			--setElementCollisionsEnabled(tObj[1],false) --maybe figure out a way to stop the dynamic wood from busting apart
+			--setElementCollisionsEnabled(tObj[1],false) --maybe figure out a way to stop the dynamic wood from busting apart WITHOUT REMOVING COLLISIONS
 			setObjectScale(tObj[1],0.5)
 		tObj[2] = createObject(3525,x,y,z-0.77,0,0,r)
 			setElementInterior(tObj[2],i)
@@ -521,34 +531,34 @@ function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF "MA
 			setElementCollisionsEnabled(tObj[2],false)
 			setElementAlpha(tObj[2],0)
 			setElementParent(tObj[2],tObj[1])
-	elseif thingType == "tent" then
-		msLifetime,bLoot = false,true
+	elseif thingType == "tent" then --todo: register tents to players; maybe give them a locator blip (again max tents = 3? we'll see)
+		msLifetime,bLoot = false,true --TENTS LIVE FOREVER AHAHAHAHAH
 		tObj[1] = createObject(3243,x,y,z,0,0,r)
 			setElementInterior(tObj[1],i)
 			setElementDimension(tObj[1],d)
 			setObjectScale(tObj[1],0.5)
 			setElementFrozen(tObj[1],true)
-	elseif thingType == "fence" then
-		msLifetime,bLoot = false,true
+	elseif thingType == "fence" then --todo: register fences to players; im spotting a trend here (maybe secure fences in the future)
+		msLifetime,bLoot = false,true --FENCES ALSO LIVE FOREVER (atleast until the server goes down RIP)
 		tObj[1] = createObject(983,x,y,z,0,0,r)
 			setElementInterior(tObj[1],i)
 			setElementDimension(tObj[1],d)
-			--setObjectScale(tObj[1],1)
+			--setObjectScale(tObj[1],1) --kept for posterity
 			setElementFrozen(tObj[1],true)
-	elseif thingType == "flare" then
-		msLifetime = 300000 --5 minutes
+	elseif thingType == "flare" then --flares will not register to players (i doubt flare spam will be a problem)
+		msLifetime = 150000 --2.5 minutes
 		tObj[1] = createObject(354,x,y,z,0,0,r)
 			setElementInterior(tObj[1],i)
 			setElementDimension(tObj[1],d)
 			setObjectScale(tObj[1],0.5)
 			setElementFrozen(tObj[1],true)
 	end
-	if eCon then --this is awesome code but its probably going to break stuff if we let people do it on anything
+	if eCon then --this is awesome code but its probably going to break stuff if we let people do it on anything; update for futr
 		local px,py,pz,rx,ry,rz = getAttachOffsets(tObj[1],eCon)
 		attachElements(tObj[1],eCon,px,py,pz,rx,ry,rz)
-		if thingType == "fireplace" then attachElements(tObj[2],eCon,px,py,pz-0.77,rx,ry,rz) end --anything made up of 2 objects or more will need a case down here
-		setElementParent(tObj[1],eCon)
-		if bLoot then createLootZone(tObj[1],thingType,true) end
+		if thingType == "fireplace" then attachElements(tObj[2],eCon,px,py,pz-0.77,rx,ry,rz) end --anything made up of 2 objects or more will need a case down here FOR ALIGNMENT REASONS
+		setElementParent(tObj[1],eCon) --we family now
+		if bLoot then createLootZone(tObj[1],thingType,true) end --ATTACHED LOOT ZONES WHY
 	elseif bLoot then
 		createLootZone(tObj[1],thingType)
 	end
@@ -908,7 +918,7 @@ function checkTemperature2()
   end
 end
 setTimer(checkTemperature2, 10000, 0)
-function setHunger() --TODO: MAKE ME BETTER
+function setHunger() --TODO: MAKE ME BETTER 
   for i,player in ipairs(getElementsByType("player")) do
     if getElementData(player, "auth") then
       local value = -1.5
@@ -952,5 +962,5 @@ setTimer(checkHumanity, 60000, 0)
   --END
   
 --[[debug stuff
-
+	--nothing for now 
 --]]
