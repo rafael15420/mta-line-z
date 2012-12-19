@@ -24,435 +24,7 @@ uses these fine resources:
 #---------------------------------------------------------------#
 ]]
 
-
-
---Survivor Skins
---Sniper
-local snipertxd = engineLoadTXD ("client/player/sniper.txd");
-engineImportTXD (snipertxd, 285);
-local sniperdff = engineLoadDFF ("client/player/sniper.dff", 285);
-engineReplaceModel (sniperdff, 285);
---Civilian
-snipertxd = engineLoadTXD ("client/player/civilian.txd");
-engineImportTXD (snipertxd, 179);
-sniperdff = engineLoadDFF ("client/player/civilian.dff", 179);
-engineReplaceModel (sniperdff, 179);
---Bandit1
-snipertxd = engineLoadTXD ("client/player/bandit3.txd");
-engineImportTXD (snipertxd, 180);
-sniperdff = engineLoadDFF ("client/player/bandit3.dff", 180);
-engineReplaceModel (sniperdff, 180);
---Bandit2
-snipertxd = engineLoadTXD ("client/player/bandit2.txd");
-engineImportTXD (snipertxd, 288);
-sniperdff = engineLoadDFF ("client/player/bandit2.dff", 288);
-engineReplaceModel (sniperdff, 288);
---[[Standart
-snipertxd = engineLoadTXD ("client/player/standart.txd");
-engineImportTXD (snipertxd, 73);
-sniperdff = engineLoadDFF ("client/player/standart.dff", 73);
-engineReplaceModel (sniperdff, 73);
-]]--
-
---Items
-
-local itemTXD = engineLoadTXD ("client/item/army_clothes.txd");
-engineImportTXD (itemTXD, 1247);
-local itemDFF = engineLoadDFF ("client/item/army_clothes.dff", 1247);
-engineReplaceModel (itemDFF, 1247);
-
-itemTXD = engineLoadTXD ("client/item/sniper_clothes.txd");
-engineImportTXD (itemTXD, 1213);
-itemDFF = engineLoadDFF ("client/item/sniper_clothes.dff", 1213);
-engineReplaceModel (itemDFF, 1213);
-
-itemTXD = engineLoadTXD ("client/item/civilian_clothes.txd");
-engineImportTXD (itemTXD, 1241);
-itemDFF = engineLoadDFF ("client/item/civilian_clothes.dff", 1241);
-engineReplaceModel (itemDFF, 1241);
-
-itemTXD = engineLoadTXD ("client/item/standard_clothes.txd");
-engineImportTXD (itemTXD, 1577);
-itemDFF = engineLoadDFF ("client/item/standard_clothes.dff", 1577);
-engineReplaceModel (itemDFF, 1577);
-
-itemTXD = engineLoadTXD ("client/item/beans_can.txd");
-engineImportTXD (itemTXD, 2601);
-itemDFF = engineLoadDFF ("client/item/beans_can.dff", 2601);
-engineReplaceModel (itemDFF, 2601);
-
-itemTXD = engineLoadTXD ("client/item/first_aid_kit.txd");
-engineImportTXD (itemTXD, 2891);
-itemDFF = engineLoadDFF ("client/item/first_aid_kit.dff", 2891);
-engineReplaceModel (itemDFF, 2891);
-
-itemTXD = engineLoadTXD ("client/item/heat_pack.txd");
-engineImportTXD (itemTXD, 1576);
-itemDFF = engineLoadDFF ("client/item/heat_pack.dff", 1576);
-engineReplaceModel (itemDFF, 1576);
-
-itemTXD = engineLoadTXD ("client/item/pain_killers.txd");
-engineImportTXD (itemTXD, 2709);
-itemDFF = engineLoadDFF ("client/item/pain_killers.dff", 2709);
-engineReplaceModel (itemDFF, 2709);
-
-itemTXD = engineLoadTXD ("client/item/pasta_can.txd");
-engineImportTXD (itemTXD, 2770);
-itemDFF = engineLoadDFF ("client/item/pasta_can.dff", 2770);
-engineReplaceModel (itemDFF, 2770);
-
-itemTXD = engineLoadTXD ("client/item/pistol_ammo.txd");
-engineImportTXD (itemTXD, 3013);
-itemDFF = engineLoadDFF ("client/item/pistol_ammo.dff", 3013);
-engineReplaceModel (itemDFF, 3013);
-
-itemTXD = engineLoadTXD ("client/item/shotgun_ammo.txd");
-engineImportTXD (itemTXD, 2358);
-itemDFF = engineLoadDFF ("client/item/shotgun_ammo.dff", 2358);
-engineReplaceModel (itemDFF, 2358);
-
-itemTXD = engineLoadTXD ("client/item/backpack_small.txd");
-engineImportTXD (itemTXD, 3026);
-itemDFF = engineLoadDFF ("client/item/backpack_small.dff", 3026);
-engineReplaceModel (itemDFF, 3026);
-
-itemTXD = engineLoadTXD ("client/item/smg_ammo.txd");
-engineImportTXD (itemTXD, 2041);
-itemDFF = engineLoadDFF ("client/item/smg_ammo.dff", 2041);
-engineReplaceModel (itemDFF, 2041);
-
-itemTXD = engineLoadTXD ("client/item/sniper_ammo.txd");
-engineImportTXD (itemTXD, 2358);
-itemDFF = engineLoadDFF ("client/item/sniper_ammo.dff", 2358);
-engineReplaceModel (itemDFF, 2358);
-
-itemTXD = engineLoadTXD ("client/item/soda_can.txd");
-engineImportTXD (itemTXD, 2647);
-itemDFF = engineLoadDFF ("client/item/soda_can.dff", 2647);
-engineReplaceModel (itemDFF, 2647);
-
-itemTXD = engineLoadTXD ("client/item/water_bottle.txd");
-engineImportTXD (itemTXD, 2683);
-itemDFF = engineLoadDFF ("client/item/water_bottle.dff", 2683);
-engineReplaceModel (itemDFF, 2683);
-
-itemTXD = engineLoadTXD ("client/item/assault_ammo.txd");
-engineImportTXD (itemTXD, 1271);
-itemDFF = engineLoadDFF ("client/item/assault_ammo.dff", 1271);
-engineReplaceModel (itemDFF, 1271);
-
-itemTXD = engineLoadTXD ("client/item/backpack_alice.txd");
-engineImportTXD (itemTXD, 1248);
-itemDFF = engineLoadDFF ("client/item/backpack_alice.dff", 1248);
-engineReplaceModel (itemDFF, 1248);
-
-itemTXD = engineLoadTXD ("client/item/backpack_coyote.txd");
-engineImportTXD (itemTXD, 1252);
-itemDFF = engineLoadDFF ("client/item/backpack_coyote.dff", 1252);
-engineReplaceModel (itemDFF, 1252);
-
-itemTXD = engineLoadTXD ("client/item/tent.txd");
-engineImportTXD (itemTXD, 3243);
-itemDFF = engineLoadDFF ("client/item/tent.dff", 3243);
-engineReplaceModel (itemDFF, 3243);
-
-itemTXD = engineLoadTXD ("client/item/wirefence.txd");
-engineImportTXD (itemTXD, 983);
-itemDFF = engineLoadDFF ("client/item/wirefence.dff", 983);
-engineReplaceModel (itemDFF, 983);
-
-function playerStatsCS()
-	if getElementData(localPlayer,"auth") then
-		toggleControl ("radar",false)
-		showPlayerHudComponent ("clock",false) 
-		showPlayerHudComponent ("radar",false)
-		showPlayerHudComponent ("money",false) 
-		showPlayerHudComponent ("health",false) 
-		--showPlayerHudComponent ("weapon",false) --ok we'll let them have their weapons
-		--showPlayerHudComponent ("ammo",false) --AND AMMO on screen (fucking casuals)
-		showPlayerHudComponent ("breath",false) 
-		if getElementData(localPlayer,"Map") >= 1  then
-			toggleControl ("radar",true)
-		end
-		if getElementData(localPlayer,"GPS") >= 1  then
-			showPlayerHudComponent ("radar",true) 
-		end
-		if getElementData(localPlayer,"Watch") >= 1 then
-			showPlayerHudComponent ("clock",true) 
-		end
-	end
-end
-setTimer(playerStatsCS,1000,0) --we do this EVERY SECOND (why)
-
-function playerZoom (key,keyState) --FUTR: make these bindable (will need a commandhandler)
-	if key == "n" then
-		if getElementData(localPlayer,"Night Vision Goggles") > 0 then
-			if nightvision then
-				nightvision = false
-				setCameraGoggleEffect("normal")
-			else 
-				nightvision = true
-				setCameraGoggleEffect("nightvision")
-			end
-		end
-	elseif key == "i" then
-		if getElementData(localPlayer,"Infrared Goggles") > 0 then
-			if infaredvision then
-				infaredvision = false
-				setCameraGoggleEffect("normal")
-			else 
-				 infaredvision = true
-				setCameraGoggleEffect("thermalvision")
-			end
-		end
-	end
-end
-addEvent("onPlayerGoggleUse",false)
-addEventHandler("onPlayerGoggleUse",localPlayer,playerZoom)
-bindKey("n","down",playerZoom)
-bindKey("i","down",playerZoom)
-
-
---------------------------------------------------------
---Player Stats										  --
---------------------------------------------------------
-function getGroundMaterial(x, y, z) 
-	local hit, hitX, hitY, hitZ, hitElement, normalX, normalY, normalZ, material = processLineOfSight(x, y, z, x, y, z-10, true, false, false, true, false, false, false, false, nil)
-	return material
-end
-
-function isInBuilding(x, y, z) 
-	local hit, hitX, hitY, hitZ, hitElement, normalX, normalY, normalZ, material = processLineOfSight(x, y, z, x, y, z+10, true, false, false, true, false, false, false, false, nil)
-	if hit then return true end
-	return false
-end
-
-function isObjectAroundPlayer2 ( thePlayer, distance, height ) 
-material_value = 0
- local x, y, z = getElementPosition( thePlayer )
- for i = math.random(0,360), 360, 1 do
-  local nx, ny = getPointFromDistanceRotation( x, y, distance, i )
- local hit, hitX, hitY, hitZ, hitElement, normalX, normalY, normalZ, material = processLineOfSight ( x, y, z + height, nx, ny, z + height,true,false,false,false,false,false,false,false )
-	if material == 0 then
-		material_value = material_value+1
-	end
-	if material_value > 40 then
-		return 0,hitX, hitY, hitZ
-	end
- end
- return false
-end
-
-function isObjectAroundPlayer ( thePlayer, distance, height )
- local x, y, z = getElementPosition( thePlayer )
- for i = math.random(0,360), 360, 1 do
-  local nx, ny = getPointFromDistanceRotation( x, y, distance, i )
- local hit, hitX, hitY, hitZ, hitElement, normalX, normalY, normalZ, material = processLineOfSight ( x, y, z + height, nx, ny, z + height)
-  if material == 0 then
-   return material,hitX, hitY, hitZ
-  end
- end
- return false
-end
-
-function getPointFromDistanceRotation ( x, y, dist, angle )
-    local a = math.rad( 90 - angle )
-    local dx = math.cos( a ) * dist
-    local dy = math.sin( a ) * dist
-    return x + dx, y + dy
-end
-
-
-function zombieSpawning()
- local x, y, z = getElementPosition(localPlayer)
-local material,hitX, hitY, hitZ = isObjectAroundPlayer2 ( localPlayer, 30, 3 )
-if material == 0 and not isInBuilding(x,y,z) then
-	triggerServerEvent("createZomieForPlayer",localPlayer,hitX, hitY, hitZ)
-end
-end
---setTimer(zombieSpawning,3000,0)
-
---ALL ZOMBIES STFU
-function stopZombieSound()
-local zombies = getElementsByType ( "ped" )
-for theKey,theZomb in ipairs(zombies) do
-	setPedVoice(theZomb, "PED_TYPE_DISABLED")
-end
-end
-setTimer(stopZombieSound,5000,0)
-
---SKIN REPLACEMENTS
-	local skin = engineLoadTXD ( "client/ped/22.txd" ) -- slashed 12 by Wall-E
-	engineImportTXD ( skin, 22 )	
-	local skin = engineLoadTXD ( "client/ped/56.txd" ) --young and blue by Slothman
-	engineImportTXD ( skin, 56 )
-	local skin = engineLoadTXD ( "client/ped/67.txd" ) -- slit r* employee
-	engineImportTXD ( skin, 67 )
-	local skin = engineLoadTXD ( "client/ped/68.txd" ) -- shredded preist by Deixell
-	engineImportTXD ( skin, 68 )
-	local skin = engineLoadTXD ( "client/ped/69.txd" ) --bleedin eyes in denim by Capitanazop
-	engineImportTXD ( skin, 69 )
-	local skin = engineLoadTXD ( "client/ped/70.txd" ) --ultra gory scientist by 50p
-	engineImportTXD ( skin, 70 )
-	local skin = engineLoadTXD ( "client/ped/84.txd" ) --guitar wolf (nonzombie) by Slothman
-	engineImportTXD ( skin, 84 )
-	local skin = engineLoadTXD ( "client/ped/92.txd" ) -- peeled flesh by xbost
-	engineImportTXD ( skin, 92 )
-	local skin = engineLoadTXD ( "client/ped/97.txd" ) -- easterboy by Slothman
-	engineImportTXD ( skin, 97 )
-	local skin = engineLoadTXD ( "client/ped/105.txd" ) --Scarred Grove Gangster by Wall-E
-	engineImportTXD ( skin, 105 )
-	local skin = engineLoadTXD ( "client/ped/107.txd" ) --ripped and slashed grove by Wall-E
-	engineImportTXD ( skin, 107 )
-	local skin = engineLoadTXD ( "client/ped/108.txd" ) -- skeleton thug by Deixell
-	engineImportTXD ( skin, 108 )
-	local skin = engineLoadTXD ( "client/ped/111.txd" ) --Frank West from dead rising (nonzombie) by Slothman
-	engineImportTXD ( skin, 111 )
-	local skin = engineLoadTXD ( "client/ped/126.txd" ) -- bullet ridden wiseguy by Slothman
-	engineImportTXD ( skin, 126 )
-	local skin = engineLoadTXD ( "client/ped/127.txd" ) --flyboy from dawn of the dead by Slothman
-	engineImportTXD ( skin, 127 )
-	local skin = engineLoadTXD ( "client/ped/128.txd" ) --holy native by Slothman
-	engineImportTXD ( skin, 128 )
-	local skin = engineLoadTXD ( "client/ped/152.txd" ) --bitten schoolgirl by Slothman
-	engineImportTXD ( skin, 152 )
-	local skin = engineLoadTXD ( "client/ped/162.txd" ) --shirtless redneck by Slothman
-	engineImportTXD ( skin, 162 )
-	local skin = engineLoadTXD ( "client/ped/167.txd" ) --dead chickenman by 50p
-	engineImportTXD ( skin, 167 )
-	local skin = engineLoadTXD ( "client/ped/188.txd" ) --burnt greenshirt by Slothman
-	engineImportTXD ( skin, 188 )
-	local skin = engineLoadTXD ( "client/ped/192.txd" ) --Alice from resident evil (nonzombie) by Slothman
-	engineImportTXD ( skin, 192 )
-	local skin = engineLoadTXD ( "client/ped/195.txd" ) --bloody ex by Slothman
-	engineImportTXD ( skin, 195 )
-	local skin = engineLoadTXD ( "client/ped/206.txd" ) -- faceless zombie by Slothman
-	engineImportTXD ( skin, 206 )
-	local skin = engineLoadTXD ( "client/ped/209.txd" ) --Noodle vendor by 50p
-	engineImportTXD ( skin, 209 )
-	local skin = engineLoadTXD ( "client/ped/212.txd" ) --brainy hobo by Slothman
-	engineImportTXD ( skin, 212 )
-	local skin = engineLoadTXD ( "client/ped/229.txd" ) --infected tourist by Slothman
-	engineImportTXD ( skin, 229 )
-	local skin = engineLoadTXD ( "client/ped/230.txd" ) --will work for brains hobo by Slothman
-	engineImportTXD ( skin, 230 )
-	local skin = engineLoadTXD ( "client/ped/258.txd" ) --bloody sided suburbanite by Slothman
-	engineImportTXD ( skin, 258 )
-	local skin = engineLoadTXD ( "client/ped/264.txd" ) --scary clown by 50p
-	engineImportTXD ( skin, 264 )
-	local skin = engineLoadTXD ( "client/ped/274.txd" ) --Ash Williams (nonzombie) by Slothman
-	engineImportTXD ( skin, 274 )
-	local skin = engineLoadTXD ( "client/ped/277.txd" ) -- gutted firefighter by Wall-E
-	engineImportTXD ( skin, 277 )
-	local skin = engineLoadTXD ( "client/ped/280.txd" ) --infected cop by Lordy
-	engineImportTXD ( skin, 280 )
-
---play zombie sounds
---local Zx,Zy,Zz = getElementPosition( ped )
---local sound = playSound3D("sounds/mgroan"..randnum..".ogg", Zx, Zy, Zz, false)
---setSoundMaxDistance(sound, 20)
-	
---------------------------------------------------------
---GUI + STATS			TODO: offload gui elements to gui.lua --
---------------------------------------------------------
-
-function math.round(number, decimals, method)
-    decimals = decimals or 0
-    local factor = 10 ^ decimals
-    if (method == "ceil" or method == "floor") then return math[method](number * factor) / factor
-    else return tonumber(("%."..decimals.."f"):format(number)) end
-end
-
-statsLabel = {}
-
-statsWindows = guiCreateStaticImage(0.775,0.2,0.225,0.22,"client/image/scrollmenu_1.png",true)
-guiSetAlpha(statsWindows,0.8)
---Zombies  Killed
-statsLabel["zombieskilled"] = guiCreateLabel(0,0.05,1,0.15,"Zombies Killed: 0",true,statsWindows)
-guiLabelSetHorizontalAlign (statsLabel["zombieskilled"],"center")
-guiSetFont (statsLabel["zombieskilled"], "default-bold-small" )
-setElementData(statsLabel["zombieskilled"],"identifikation","zombieskilled")
---Headshots
-statsLabel["headshots"] = guiCreateLabel(0,0.15,1,0.15,"Headshots: 0",true,statsWindows)
-guiLabelSetHorizontalAlign (statsLabel["headshots"],"center")
-guiSetFont (statsLabel["headshots"], "default-bold-small" )
-setElementData(statsLabel["headshots"],"identifikation","headshots")
---Murders
-statsLabel["murders"] = guiCreateLabel(0,0.25,1,0.15,"Murders: 0",true,statsWindows)
-guiLabelSetHorizontalAlign (statsLabel["murders"],"center")
-guiSetFont (statsLabel["murders"], "default-bold-small" )
-setElementData(statsLabel["murders"],"identifikation","murders")
---Bandits Killed
-statsLabel["banditskilled"] = guiCreateLabel(0,0.35,1,0.15,"Bandits Killed: 0",true,statsWindows)
-guiLabelSetHorizontalAlign (statsLabel["banditskilled"],"center")
-guiSetFont (statsLabel["banditskilled"], "default-bold-small" )
-setElementData(statsLabel["banditskilled"],"identifikation","banditskilled")
---Blood
-statsLabel["blood"] = guiCreateLabel(0,0.45,1,0.15,"Blood: 12000",true,statsWindows)
-guiLabelSetHorizontalAlign (statsLabel["blood"],"center")
-guiSetFont (statsLabel["blood"], "default-bold-small" )
-setElementData(statsLabel["blood"],"identifikation","blood")
---Zombies
-statsLabel["zombies"] = guiCreateLabel(0,0.55,1,0.15,"Zombies (Alive/Total): 0/0",true,statsWindows)
-guiLabelSetHorizontalAlign (statsLabel["zombies"],"center")
-guiSetFont (statsLabel["zombies"], "default-bold-small" )
-setElementData(statsLabel["zombies"],"identifikation","zombies")
---Temperature
-statsLabel["temperature"] = guiCreateLabel(0,0.65,1,0.15,"Temperature: 37°C",true,statsWindows)
-guiLabelSetHorizontalAlign (statsLabel["temperature"],"center")
-guiSetFont (statsLabel["temperature"], "default-bold-small" )
-setElementData(statsLabel["temperature"],"identifikation","temperature")
---Humanity
-statsLabel["humanity"] = guiCreateLabel(0,0.75,1,0.15,"Humanity: 2500",true,statsWindows)
-guiLabelSetHorizontalAlign (statsLabel["humanity"],"center")
-guiSetFont (statsLabel["humanity"], "default-bold-small" )
-setElementData(statsLabel["humanity"],"identifikation","humanity")
---Name
-statsLabel["name"] = guiCreateLabel(0,0.85,1,0.15,"Name: "..getPlayerName(localPlayer),true,statsWindows)
-guiLabelSetHorizontalAlign (statsLabel["name"],"center")
-guiSetFont (statsLabel["name"], "default-bold-small" )
-setElementData(statsLabel["name"],"identifikation","name")
-guiSetVisible(statsWindows,false)
-
-function showDebugMonitor ()
-	local visible = guiGetVisible(statsWindows)
-	guiSetVisible(statsWindows,not visible)
-end
-addCommandHandler("debugMon", showDebugMonitor, false) --remove this bind eventually
-bindKey("F5", "down", "debugMon", "")
-
-function refreshDebugMonitor()
-if getElementData(localPlayer,"auth") then
-			local value = getElementData(localPlayer,getElementData(statsLabel["zombieskilled"],"identifikation"))
-			guiSetText(statsLabel["zombieskilled"],"Zombies Killed: "..value)
-			
-			local value = getElementData(localPlayer,getElementData(statsLabel["headshots"],"identifikation"))
-			guiSetText(statsLabel["headshots"],"Headshots: "..value)
-			
-			local value = getElementData(localPlayer,getElementData(statsLabel["banditskilled"],"identifikation"))
-			guiSetText(statsLabel["banditskilled"],"Bandits Killed: "..value)
-			
-			local value = getElementData(localPlayer,getElementData(statsLabel["murders"],"identifikation"))
-			guiSetText(statsLabel["murders"],"Murders: "..value)
-			
-			local value = getElementData(localPlayer,getElementData(statsLabel["blood"],"identifikation"))
-			guiSetText(statsLabel["blood"],"Blood: "..value)
-			
-			local value = getElementData(getRootElement(),"zombiesalive") or 0
-			local value2 = getElementData(getRootElement(),"zombiestotal") or 0
-			guiSetText(statsLabel["zombies"],"Zombies (Alive/Total): "..value.."/"..value2)
-			
-			local value = getElementData(localPlayer,getElementData(statsLabel["temperature"],"identifikation"))
-			guiSetText(statsLabel["temperature"],"Temperature: "..math.round(value,2).."°C")
-			
-			local value = getElementData(localPlayer,getElementData(statsLabel["humanity"],"identifikation"))
-			guiSetText(statsLabel["humanity"],"Humanity: "..math.round(value,2))
-			
-			guiSetText(statsLabel["name"],"Name: "..getPlayerName(localPlayer))
-end			
-end
-setTimer(refreshDebugMonitor,2000,0)
-
+--VARIABLES
 weaponAmmoTable = { --going into master
 	["Pistol Ammo"] = {
 		{"Pistol",22},
@@ -490,7 +62,98 @@ weaponAmmoTable = { --going into master
 		{"Katana",8},
 	},
 }
+damageTable = { --to: master
+{"M4",6722},
+{"Sniper Rifle",11552},
+{"Shotgun",2024},
+{"MP5",1169},
+{"SPAZ-12 Combat Shotgun",4582},
+{"AK-47",3555},
+{"Heat-Seeking RPG",37552},
+{"Rocket Launcher",37552},
+{"Country Rifle",6722},
+{"Knife",1500},
+{"Katana",2100},
+{"Pistol",889},
+{"Silenced Pistol",889},
+{"Uzi",889},
+{"TEC-9",889},
+{"Sawn-Off Shotgun",2894},
+{"Desert Eagle",2489},
+{"Grenade",18000},
+}
+weaponNoiseTable = { --god everything is everywhere (re)MOVE ME
+--0 none
+--20 low
+--40 moderate
+--60 high
+{22,20},
+{23,0},
+{24,60},
+{28,40},
+{32,40},
+{29,40},
+{30,60},
+{31,60},
+{25,40},
+{26,60},
+{27,60},
+{33,40},
+{34,60},
+{36,60},
+{35,60},
+}
 
+--FUNCTIONS
+ --util
+function math.round(number, decimals, method)
+    decimals = decimals or 0
+    local factor = 10 ^ decimals
+    if (method == "ceil" or method == "floor") then return math[method](number * factor) / factor
+    else return tonumber(("%."..decimals.."f"):format(number)) end
+end
+ --etc
+function getGroundMaterial(x, y, z) 
+	local hit, hitX, hitY, hitZ, hitElement, normalX, normalY, normalZ, material = processLineOfSight(x, y, z, x, y, z-10, true, false, false, true, false, false, false, false, nil)
+	return material
+end
+function isInBuilding(x, y, z) 
+	local hit, hitX, hitY, hitZ, hitElement, normalX, normalY, normalZ, material = processLineOfSight(x, y, z, x, y, z+10, true, false, false, true, false, false, false, false, nil)
+	if hit then return true end
+	return false
+end
+function isObjectAroundPlayer2 ( thePlayer, distance, height ) 
+material_value = 0
+ local x, y, z = getElementPosition( thePlayer )
+ for i = math.random(0,360), 360, 1 do
+  local nx, ny = getPointFromDistanceRotation( x, y, distance, i )
+ local hit, hitX, hitY, hitZ, hitElement, normalX, normalY, normalZ, material = processLineOfSight ( x, y, z + height, nx, ny, z + height,true,false,false,false,false,false,false,false )
+	if material == 0 then
+		material_value = material_value+1
+	end
+	if material_value > 40 then
+		return 0,hitX, hitY, hitZ
+	end
+ end
+ return false
+end
+function isObjectAroundPlayer ( thePlayer, distance, height )
+ local x, y, z = getElementPosition( thePlayer )
+ for i = math.random(0,360), 360, 1 do
+  local nx, ny = getPointFromDistanceRotation( x, y, distance, i )
+ local hit, hitX, hitY, hitZ, hitElement, normalX, normalY, normalZ, material = processLineOfSight ( x, y, z + height, nx, ny, z + height)
+  if material == 0 then
+   return material,hitX, hitY, hitZ
+  end
+ end
+ return false
+end
+function getPointFromDistanceRotation ( x, y, dist, angle )
+    local a = math.rad( 90 - angle )
+    local dx = math.cos( a ) * dist
+    local dy = math.sin( a ) * dist
+    return x + dx, y + dy
+end
 function getWeaponAmmoType (weaponName) --FUTR: rewrite for master
 	for i,weaponData in ipairs(weaponAmmoTable["others"]) do
 		if weaponName == weaponData[1] then
@@ -528,28 +191,6 @@ function getWeaponAmmoType (weaponName) --FUTR: rewrite for master
 		end
 	end
 end
-
-damageTable = { --to: master
-{"M4",6722},
-{"Sniper Rifle",11552},
-{"Shotgun",2024},
-{"MP5",1169},
-{"SPAZ-12 Combat Shotgun",4582},
-{"AK-47",3555},
-{"Heat-Seeking RPG",37552},
-{"Rocket Launcher",37552},
-{"Country Rifle",6722},
-{"Knife",1500},
-{"Katana",2100},
-{"Pistol",889},
-{"Silenced Pistol",889},
-{"Uzi",889},
-{"TEC-9",889},
-{"Sawn-Off Shotgun",2894},
-{"Desert Eagle",2489},
-{"Grenade",18000},
-}
-
 function getWeaponDamage (weapon) --FUTR: fix for master
 	for i,weapon2 in ipairs(damageTable) do
 		local t,weapon1 = getWeaponAmmoType(weapon2[1])
@@ -558,9 +199,17 @@ function getWeaponDamage (weapon) --FUTR: fix for master
 		end
 	end
 end
+function getWeaponNoise(weapon)
+	for i,weapon2 in ipairs(weaponNoiseTable) do
+		if weapon == weapon2[1] then
+			return weapon2[2]
+		end
+	end
+	return 0
+end
 
---
-function playerGetDamageDayZ ( attacker, weapon, bodypart, loss )
+--EVENTS
+function playerGetDamageDayZ ( attacker, weapon, bodypart, loss ) --THIS IS A BIG ONE
 	cancelEvent()
 	damage = 100
 	headshot = false
@@ -631,7 +280,6 @@ function playerGetDamageDayZ ( attacker, weapon, bodypart, loss )
 	end
 end
 addEventHandler ( "onClientPlayerDamage", getLocalPlayer (), playerGetDamageDayZ )
-
 function pedGetDamageDayZ ( attacker, weapon, bodypart, loss )
 cancelEvent()
 if attacker and attacker == localPlayer then
@@ -659,7 +307,78 @@ end
 end
 addEventHandler ( "onClientPedDamage", getRootElement(), pedGetDamageDayZ )
 
+--BINDS
+function showDebugMonitor ()
+	local visible = guiGetVisible(statsWindows)
+	guiSetVisible(statsWindows,not visible)
+end
+addCommandHandler("debugMon", showDebugMonitor, false) --remove this bind eventually
+bindKey("F5", "down", "debugMon", "")
+function playerZoom (key)
+	if key == "n" then
+		if getElementData(localPlayer,"Night Vision Goggles") > 0 then
+			if nightvision then
+				nightvision = false
+				setCameraGoggleEffect("normal")
+			else 
+				nightvision = true
+				setCameraGoggleEffect("nightvision")
+			end
+		end
+	elseif key == "i" then
+		if getElementData(localPlayer,"Infrared Goggles") > 0 then
+			if infaredvision then
+				infaredvision = false
+				setCameraGoggleEffect("normal")
+			else 
+				 infaredvision = true
+				setCameraGoggleEffect("thermalvision")
+			end
+		end
+	end
+end
+addCommandHandler("goggleUse", playerZoom, false)
+bindKey("n", "down", "playerZoom", "n")
+bindKey("i", "down", "playerZoom", "i")
 
+--TIMERS
+function playerStatsCS()
+	if getElementData(localPlayer,"auth") then
+		toggleControl ("radar",false)
+		showPlayerHudComponent ("clock",false) 
+		showPlayerHudComponent ("radar",false)
+		showPlayerHudComponent ("money",false) 
+		showPlayerHudComponent ("health",false) 
+		--showPlayerHudComponent ("weapon",false) --ok we'll let them have their weapons
+		--showPlayerHudComponent ("ammo",false) --AND AMMO on screen (fucking casuals)
+		showPlayerHudComponent ("breath",false) 
+		if getElementData(localPlayer,"Map") >= 1  then
+			toggleControl ("radar",true)
+		end
+		if getElementData(localPlayer,"GPS") >= 1  then
+			showPlayerHudComponent ("radar",true) 
+		end
+		if getElementData(localPlayer,"Watch") >= 1 then
+			showPlayerHudComponent ("clock",true) 
+		end
+	end
+end
+setTimer(playerStatsCS,1000,0) --we do this EVERY SECOND (why)
+function zombieSpawning()
+	local x, y, z = getElementPosition(localPlayer)
+	local material,hitX, hitY, hitZ = isObjectAroundPlayer2 ( localPlayer, 30, 3 )
+	if material == 0 and not isInBuilding(x,y,z) then
+		triggerServerEvent("createZomieForPlayer",localPlayer,hitX, hitY, hitZ)
+	end
+end
+--setTimer(zombieSpawning,3000,0)
+function stopZombieSound()
+	local zombies = getElementsByType ( "ped" )
+	for theKey,theZomb in ipairs(zombies) do
+		setPedVoice(theZomb, "PED_TYPE_DISABLED")
+	end
+end
+setTimer(stopZombieSound,5000,0)
 function checkStats()
 if getElementData(localPlayer,"auth") then
 	local bleed = getElementData(localPlayer,"bleeding")
@@ -677,8 +396,7 @@ if getElementData(localPlayer,"auth") then
 end	
 end
 setTimer(checkStats,3000,0)
-
-function createBloodForBleedingPlayers ()
+function createBloodForBleedingPlayers() --this is obv stolen code who marwin stole it from i dunno
 if getElementData(localPlayer,"auth") then
 local x,y,z = getElementPosition(localPlayer)
 	for i,player in ipairs(getElementsByType("player")) do
@@ -703,7 +421,6 @@ local x,y,z = getElementPosition(localPlayer)
 end	
 end
 setTimer(createBloodForBleedingPlayers,300,0)
-
 function checkBrokenbone()
 if getElementData(localPlayer,"auth") then
 	if getElementData(localPlayer,"brokenbone") then
@@ -720,8 +437,7 @@ if getElementData(localPlayer,"auth") then
 end	
 end
 setTimer(checkBrokenbone,1500,0)
-
-function setPain()
+function setPain() --camera effect
 if getElementData(localPlayer,"auth") then
 	if getElementData(localPlayer,"pain") then --this is horrible fix this so its not so GAY
 		local x,y,z = getElementPosition(localPlayer)
@@ -734,7 +450,6 @@ if getElementData(localPlayer,"auth") then
 end	
 end
 setTimer(setPain,1500,0)
-
 function checkCold()
 if getElementData(localPlayer,"auth") then
 	if getElementData(localPlayer,"temperature") <= 31 then
@@ -743,8 +458,7 @@ if getElementData(localPlayer,"auth") then
 end	
 end
 setTimer(checkCold,3000,0)
-
-function setCold()
+function setCold() --camera effect
 	if getElementData(localPlayer,"auth") then --again deGAY this shit
 		if getElementData(localPlayer,"cold") then
 			local x,y,z = getElementPosition(localPlayer)
@@ -754,8 +468,7 @@ function setCold()
 	end	
 end
 setTimer(setCold,1500,0)
-
-function setVolume()
+function setVolume() --PLEASE FIX
 	value = 0
 	if getPedMoveState (localPlayer) == "stand" then
 		value = 0
@@ -781,11 +494,10 @@ function setVolume()
 	if value > 100 then
 		value = 100
 	end
-	setElementData(localPlayer,"volume",value)
+	setElementData(localPlayer,"volume",value) --setElementData IS SYNCED FUCKING FUCK DO NOT DO THIS EVERY 100ms
 end
 setTimer(setVolume,100,0)
-
-function setVisibility()
+function setVisibility() --PLEASE FIX
 	value = 0
 	if getPedMoveState (localPlayer) == "stand" then
 		value = 60
@@ -811,10 +523,12 @@ function setVisibility()
 	if isPedInVehicle (localPlayer) then
 		value = 100
 	end	
-	setElementData(localPlayer,"visibly",value)
+	setElementData(localPlayer,"visibly",value) --setElementData IS SYNCED FUCKING FUCK DO NOT DO THIS EVERY 100ms
 end
-setTimer(setVisibility,100,0)
-
+setTimer(setVisibility,100,0) 
+function debugJump2() --why2
+	setElementData(localPlayer,"jumping",false)
+end
 function debugJump() --why
 	if getControlState("jump") then
 		setElementData(localPlayer,"jumping",true)
@@ -822,42 +536,10 @@ function debugJump() --why
 	end
 end
 setTimer(debugJump,100,0)
-
-function debugJump2() --why2
-	setElementData(localPlayer,"jumping",false)
+function debugShooting2() --more why2
+	setElementData(localPlayer,"shooting",0)
+	shootTimer = false
 end
-
-weaponNoiseTable = { --god everything is everywhere (re)MOVE ME
-{22,20},
-{23,0},
-{24,60},
-{28,40},
-{32,40},
-{29,40},
-{30,60},
-{31,60},
-{25,40},
-{26,60},
-{27,60},
-{33,40},
-{34,60},
-{36,60},
-{35,60},
-}
---0 none
---20 low
---40 moderate
---60 high
-
-function getWeaponNoise(weapon)
-	for i,weapon2 in ipairs(weaponNoiseTable) do
-		if weapon == weapon2[1] then
-			return weapon2[2]
-		end
-	end
-	return 0
-end
-
 function debugShooting() --more why
 if getControlState("fire") then
 	local weapon = getPedWeapon(localPlayer)
@@ -870,12 +552,6 @@ if getControlState("fire") then
 end
 end
 setTimer(debugShooting,100,0)
-
-function debugShooting2() --more why2
-	setElementData(localPlayer,"shooting",0)
-	shootTimer = false
-end
-
 function checkZombies()
 zombiesalive = 0
 zombiestotal = 0
@@ -891,7 +567,6 @@ setElementData(getRootElement(),"zombiesalive",zombiesalive)
 setElementData(getRootElement(),"zombiestotal",zombiestotal+zombiesalive)
 end
 setTimer(checkZombies,5000,0)
-
 function checkZombies3()
 local x,y,z = getElementPosition(localPlayer)
 for i,ped in ipairs(getElementsByType("ped")) do
@@ -916,227 +591,17 @@ end
 end
 setTimer(checkZombies3,500,0)
 
-fading = 0
-fading2 = "up"
-local screenWidth,screenHeight = guiGetScreenSize()
-function updateIcons () --MAGIC MAGIC MAGIC MAGIC MAGIC
-if getElementData(localPlayer,"auth") then
-	--fading
-	if fading >= 0 and fading2 == "up" then
-		fading = fading + 5
-	elseif fading <= 255 and fading2 == "down" then
-		fading = fading - 5
-	end
-	--fading math.
-	if fading == 0 then
-		fading2 = "up"
-	elseif fading == 255 then
-		fading2 = "down"
-	end
-	--sound
-	dxDrawImage ( screenWidth*0.9325 , screenHeight*0.41, screenHeight*0.075, screenHeight*0.075, "client/image/icons/sound.png",0,0,0,tocolor(0,255,0))
-	local sound = getElementData(localPlayer,"volume")/20
-	if sound > 1 then
-		dxDrawImage ( screenWidth*0.9075 , screenHeight*0.41, screenHeight*0.075, screenHeight*0.075, "client/image/icons/level_"..sound..".png",0,0,0,tocolor(0,255,0))
-	end
-	--visibly
-	dxDrawImage ( screenWidth*0.9325 , screenHeight*0.475, screenHeight*0.075, screenHeight*0.075, "client/image/icons/eye.png",0,0,0,tocolor(0,255,0))
-	local sound = getElementData(localPlayer,"visibly")/20
-	if sound > 1 then
-		dxDrawImage ( screenWidth*0.9075 , screenHeight*0.475, screenHeight*0.075, screenHeight*0.075, "client/image/icons/level_"..sound..".png",0,0,0,tocolor(0,255,0))
-	end
-	--brokenbone
-	if getElementData(localPlayer,"brokenbone") then
-		dxDrawImage ( screenWidth*0.9375 , screenHeight*0.55, screenHeight*0.065, screenHeight*0.065, "client/image/icons/brokenbone.png",0,0,0,tocolor(255,255,255))
-	end
-	--bandit	
-	local humanity =  getElementData(localPlayer,"humanity")
-	if (humanity) and (humanity > 0) then
-		local humanity =  getElementData(localPlayer,"humanity")/9.8
-		r,g,b = 255-humanity,humanity,0
-	else	
-		r,g,b = 255,0,0
-	end
-		dxDrawImage ( screenWidth*0.925 , screenHeight*0.6, screenHeight*0.1, screenHeight*0.1, "client/image/icons/bandit.png",0,0,0,tocolor(r,g,b))
-	--temperature
-	local temperature = math.round(getElementData(localPlayer,"temperature"),2)
-	r,g,b = 0,255,0
-	if temperature <= 37 then
-		value = (37-temperature)*42.5
-		r,g,b = 0,255-value,value
-	elseif temperature > 37 and temperature < 41 then
-		r,g,b = 0,255,0
-	elseif temperature == 41 then
-		r,g,b = 255,0,0
-	end
-	if value > 215 then
-		dxDrawImage ( screenWidth*0.94 , screenHeight*0.7, screenHeight*0.065, screenHeight*0.065, "client/image/icons/temperature.png",0,0,0,tocolor(r,g,b,fading))
-	else
-		dxDrawImage ( screenWidth*0.94 , screenHeight*0.7, screenHeight*0.065, screenHeight*0.065, "client/image/icons/temperature.png",0,0,0,tocolor(r,g,b))
-	end
-	--thirsty
-	r,g,b = 0,255,0
-	local thirst = getElementData(localPlayer,"thirst")*2.55
-	r,g,b = 255-thirst,thirst,0
-	if thirst < 15 then
-		dxDrawImage ( screenWidth*0.94 , screenHeight*0.775, screenHeight*0.065, screenHeight*0.065, "client/image/icons/thirsty.png",0,0,0,tocolor(r,g,b,fading))
-	else
-		dxDrawImage ( screenWidth*0.94 , screenHeight*0.775, screenHeight*0.065, screenHeight*0.065, "client/image/icons/thirsty.png",0,0,0,tocolor(r,g,b))
-	end	
-	--blood
-	r,g,b = 0,255,0
-	local blood = getElementData(localPlayer,"blood")/47.2
-	r,g,b = 255-blood,blood,0
-	dxDrawImage ( screenWidth*0.94 , screenHeight*0.85, screenHeight*0.065, screenHeight*0.065, "client/image/icons/blood.png",0,0,0,tocolor(r,g,b))
-	if getElementData(localPlayer,"bleeding") > 0 then
-		dxDrawImage ( screenWidth*0.94 , screenHeight*0.85, screenHeight*0.065, screenHeight*0.065, "client/image/icons/medic.png",0,0,0,tocolor(255,255,255,fading))
-	end
-	--food
-	r,g,b = 0,255,0
-	local food = getElementData(localPlayer,"food")*2.55
-	r,g,b = 255-food,food,0
-	if food < 15 then
-		dxDrawImage ( screenWidth*0.94 , screenHeight*0.925, screenHeight*0.065, screenHeight*0.065, "client/image/icons/food.png",0,0,0,tocolor(r,g,b,fading))
-	else
-		dxDrawImage ( screenWidth*0.94 , screenHeight*0.925, screenHeight*0.065, screenHeight*0.065, "client/image/icons/food.png",0,0,0,tocolor(r,g,b))
-	end	
-	--Nametags
-	local x,y,z = getElementPosition(localPlayer)
-	for i,player in ipairs(getElementsByType("player")) do
-		setPlayerNametagShowing ( player, false )
-		if player ~= localPlayer then
-		local vehicle = getPedOccupiedVehicle(player)
-                local px,py,pz = getElementPosition (player)
-                local pdistance = getDistanceBetweenPoints3D ( x,y,z,px,py,pz )
-                if pdistance <= 2.5 then
-                    --Get screenposition
-                    local sx,sy = getScreenFromWorldPosition ( px, py, pz+0.95, 0.06 )
-					if sx and sy then
-					--Draw Name
-					if getElementData(player,"bandit") then
-						text = string.gsub(getPlayerName(player), '#%x%x%x%x%x%x', '' ).." (Bandit)"
-					else
-						text = string.gsub(getPlayerName(player), '#%x%x%x%x%x%x', '' )
-					end
-					local w = dxGetTextWidth(text,1.02,"default-bold")
-					dxDrawText (text, sx-(w/2), sy, sx-(w/2), sy, tocolor ( 100, 255, 100, 200 ), 1.02, "default-bold" )
-					end
-				end
-		end		
-	end
-	--Vehicletags
-	local x,y,z = getElementPosition(localPlayer)
-	for i,veh in ipairs(getElementsByType("vehicle")) do
-				local px,py,pz = getElementPosition (veh)
-				local vehID = getElementModel(veh)
-				local vehicle = getPedOccupiedVehicle(localPlayer)
-				if veh ~= vehicle then
-				if vehID ~= 548 then
-                local pdistance = getDistanceBetweenPoints3D ( x,y,z,px,py,pz )
-                if pdistance <= 6 then
-                    --Get screenposition
-                    local sx,sy = getScreenFromWorldPosition ( px, py, pz+0.95, 0.06 )
-					if sx and sy then
-					--Draw Vehicle
-					local w = dxGetTextWidth(getVehicleName(veh),1.02,"default-bold")
-					dxDrawText ( getVehicleName(veh), sx-(w/2), sy, sx-(w/2), sy, tocolor ( 100, 255, 100, 200 ), 1.02, "default-bold" )	
-					end
-				end
-				end
-				end
-	end
-	--Vehicle Infos
-	local veh = getPedOccupiedVehicle (localPlayer)
-	if veh then
-		local maxfuel = getElementData(veh,"maxfuel")
-		local fuel = getElementData(getElementData(veh,"Ext"),"fuel")
-		local needengine = getElementData(veh,"needengines")
-		local needtires = getElementData(veh,"needtires")
-		local engine = getElementData(getElementData(veh,"Ext"),"Engine_inVehicle") or 0
-		local tires = getElementData(getElementData(veh,"Ext"),"Tire_inVehicle") or 0
-		local offset = dxGetFontHeight(1.02,"default-bold")
-		local w = dxGetTextWidth(engine.."/"..needengine.." Engine(s)",1.02,"default-bold")
-		if engine == needengine then
-			r,g,b = 0,255,0
-		else
-			r,g,b = 255,0,0
-		end
-		dxDrawText (engine.."/"..needengine.." Engine(s)" ,screenWidth*0.5-w/2 , screenHeight*0,screenWidth*0.5-w/2 , screenHeight*0,tocolor ( r,g,b, 220 ), 1.02, "default-bold" )
-		local w = dxGetTextWidth(tires.."/"..needtires.." Tires",1.02,"default-bold")
-		if tires == needtires then
-			r,g,b = 0,255,0
-		else
-			r,g,b = 255,0,0
-		end
-		dxDrawText (tires.."/"..needtires.." Tires",screenWidth*0.5-w/2 , screenHeight*0+offset,screenWidth*0.5-w/2 , screenHeight*0+offset,tocolor ( r,g,b, 220 ), 1.02, "default-bold" )
-		local w = dxGetTextWidth("Fuel:"..math.floor(fuel).."/"..maxfuel,1.02,"default-bold")
-		if fuel == maxfuel then
-			r,g,b = 0,255,0
-		elseif fuel < (maxfuel/10) then
-			r,g,b = 255,0,0	
-		elseif fuel < (maxfuel/4) then
-			r,g,b = 255,50,0	
-		elseif fuel < (maxfuel/3) then
-			r,g,b = 200,100,0
-		elseif fuel < (maxfuel/2) then
-			r,g,b = 125,200,0		
-		elseif fuel < (maxfuel/1.5) then
-			r,g,b = 50,200,0
-		end
-		dxDrawText ("Fuel:"..math.floor(fuel).."/"..maxfuel,screenWidth*0.5-w/2 , screenHeight*0+offset*2,screenWidth*0.5-w/2 , screenHeight*0+offset*2,tocolor ( r,g,b, 220 ), 1.02, "default-bold" )
-	end
-end	
-end
-addEventHandler ( "onClientRender", getRootElement(), updateIcons )
 
-function dayZDeathInfo ()
-	fadeCamera (false, 1.0, 0, 0, 0 ) 
-	setTimer(showDayZDeathScreen,2000,1)
-end
-addEvent("onClientPlayerDeathInfo",true)
-addEventHandler("onClientPlayerDeathInfo",getRootElement(),dayZDeathInfo)
+	
+--------------------------------------------------------
+--GUI + STATS			TODO: offload gui elements to gui.lua --
+--------------------------------------------------------
 
-function showDayZDeathScreen()
-	setTimer ( fadeCamera, 1000, 1, true, 1.5 )
-	deadBackground = guiCreateStaticImage(0,0,1,1,"client/image/dead.jpg",true)
-	deathText = guiCreateLabel(0,0.8,1,0.2,"You died, \n you will respawn in 5 seconds.",true)
-	guiLabelSetHorizontalAlign (deathText,"center")
-	setTimer(guiSetVisible,5000,1,false)
-	setTimer(guiSetVisible,5000,1,false)
-	setTimer(destroyElement,5000,1,deathText)
-	setTimer(destroyElement,5000,1,deadBackground)
-end
 
---OnClientPlayerHit
-whiteWindow = guiCreateStaticImage(0,0,1,1,"client/image/white.png",true)
-guiSetVisible(whiteWindow,false)
 
-function showPlayerDamageScreen (visibly2,stateControle2)
-	guiSetVisible(whiteWindow,true)
-	visibly = visibly2 or visibly
-	stateControle = stateControle2 or stateControle
-	if visibly >= 10*0.075 and stateControle == "up" then
-		stateControle = "down"
-	end
-	if visibly < 0 then
-		guiSetVisible(whiteWindow,false)
-		return
-	end
-	if stateControle == "up" then
-		visibly = visibly + 0.075
-	elseif stateControle == "down" then
-		visibly = visibly - 0.075
-	end
-	guiSetAlpha(whiteWindow,visibly)
-	setTimer(showPlayerDamageScreen,50,1)
-end
+--keep on moooovin
 
-function showWhiteScreen ( attacker, weapon, bodypart )
-	--if weapon then
-		showPlayerDamageScreen (0,"up")
-	--end
-end
-addEventHandler ( "onClientPlayerDamage", localPlayer, showWhiteScreen )
+
 
 --[[ why this is commented out ill never know; maybe i should FIGURE IT OUT
 function destroyBlipGPS ()
