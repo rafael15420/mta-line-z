@@ -1,5 +1,10 @@
---login.lua drline 2012
---EVENTUALLY: move all gui functions to here, rename this gui.lua
+--[[ LOGIN.LUA		drline 2012
+
+	keepin it modular
+
+--]]
+
+--vars
 local loginWnd,loginBtn,loginLab,loginEdt,loginTry,root,resRoot =
 																  {},
 																  {},
@@ -10,13 +15,15 @@ local loginWnd,loginBtn,loginLab,loginEdt,loginTry,root,resRoot =
 																  getResourceRootElement(getThisResource())
 local usrName,confFile
 
+--funcs
+ --util
 function centerWindow(center_window)
     local screenW,screenH=guiGetScreenSize()
     local windowW,windowH=guiGetSize(center_window,false)
     local x,y = (screenW-windowW)/2,(screenH-windowH)/2
     guiSetPosition(center_window,x,y,false)
 end
-
+ --login gui
 function createLoginWindow()
 	confFile = xmlLoadFile("usr.xml")
 	if (confFile) then
@@ -46,7 +53,6 @@ function createLoginWindow()
 	
 	guiSetVisible(loginWnd[1], false)
 end	
-
 function loginSubmit(btn,pos)
 	if ((btn == "left") and (pos == "up")) or ((btn == loginEdt[2] or btn == loginEdt[1]) and (not pos))  then
 		local one,two = guiGetText(loginEdt[1]),
@@ -67,6 +73,7 @@ function loginSubmit(btn,pos)
 	end
 end
 
+--EVs
 function showLogin(bVis)
 	guiSetVisible(loginWnd[1], bVis)
 	showCursor(bVis)
@@ -74,14 +81,12 @@ function showLogin(bVis)
 end
 addEvent("showLoginEv", true)
 addEventHandler("showLoginEv", root, showLogin)
-
 function showInval()
 	guiSetText(loginWnd[1], "INVALID PASSWORD")
 	guiLabelSetColor(loginLab[2],255,0,0)
 end
 addEvent("showInvalEv", true)
 addEventHandler("showInvalEv", root, showInval)
-
 function loginInitHandler()
 	createLoginWindow()
 	if (loginWnd == nil) then
