@@ -97,7 +97,7 @@ inventoryItems = {
 
 
 ------------------------------------------------------------------------------
---INVENTORY
+--INVENTORY this is a gui element
 local headline = {}
 local gridlistItems = {}
 local buttonItems = {}

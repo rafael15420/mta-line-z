@@ -573,9 +573,57 @@ function createLootZone(e,zType,bAttach) --TODO(75%): pull/link/init OLDINV (dea
 	setElementData(col,zType,true)
 	return col
 end
+function addPlayerStats(player, data, value) --todo: figure me out
+  if data == "food" then
+    local current = getElementData(player, data)
+    if current + value > 100 then
+      setElementData(player, data, 100)
+    elseif current + value < 1 then
+      setElementData(player, data, 0)
+      setElementData(player, "blood", getElementData(player, "blood") - math.random(50, 120))
+    else
+      setElementData(player, data, current + value)
+    end
+  elseif data == "thirst" then
+    local current = getElementData(player, data)
+    if current + value > 100 then
+      setElementData(player, data, 100)
+    elseif current + value < 1 then
+      setElementData(player, data, 0)
+      setElementData(player, "blood", getElementData(player, "blood") - math.random(50, 120))
+    else
+      setElementData(player, data, current + value)
+    end
+  elseif data == "blood" then
+    local current = getElementData(player, data)
+    if current + value > 12000 then
+      setElementData(player, data, 12000)
+    elseif current + value < 1 then
+      setElementData(player, data, 0)
+    else
+      setElementData(player, data, current + value)
+    end
+  elseif data == "temperature" then
+    local current = getElementData(player, data)
+    if current + value > 41 then
+      setElementData(player, data, 41)
+    elseif current + value <= 31 then
+      setElementData(player, data, 31)
+    else
+      setElementData(player, data, current + value)
+    end
+  elseif data == "humanity" then
+    local current = getElementData(player, data)
+    if current + value > 5000 then
+      setElementData(player, data, 5000)
+    end
+  else
+    setElementData(player, data, current + value)
+  end
+end
 
 --NEW EVENTS | FUTR: combine thing stuff into thingHandler
-function loginHandler(u,p,t) --DONE(99%) EVENTUALLY SS THE TRY CHECKS
+function loginHandler(u,p,t) --DONE(99%) EVENTUALLY SS THE TRY CHECKS (far future)
 	if (not u) or (not p) or (not t) then --for safety
 		outputServerLog("blank login/try")
 		outputServerLog("THIS SHOULD NOT HAPPEN")
@@ -852,7 +900,7 @@ function deathHandler(tot,atk,wpn,bp,bStealth) --this handles ALL DEATHS EVEN ST
 	setTimer(spawnPlr,7050,1,source) --arbitrary numbers
 end
 addEventHandler("onPlayerWasted", root, deathHandler)
-function exitHandler()
+function exitHandler() --maybe fix this later
 	--kicking all players isnt a problem because it calls quithandler on all of them NOICE
 	local players = getElementsByType("player")
 	for k,v in ipairs(players) do
@@ -879,13 +927,13 @@ function checkTemperature() --TODO: ADD MORE WEATHERS
   for i,player in ipairs(getElementsByType("player")) do
     if getElementData(player, "auth") then
       local value = 0
-      if getWeather == 7 then
+      if getWeather == 7 then --
         value = -0.1
-      elseif getWeather == 12 then
+      elseif getWeather == 12 then --
         value = 0
-      elseif getWeather == 16 then
+      elseif getWeather == 16 then --
         value = -0.4
-      elseif getWeather == 4 then
+      elseif getWeather == 4 then --
         value = -0.1
       end
       local hour, minutes = getTime()
@@ -900,8 +948,8 @@ setTimer(checkTemperature, 60000, 0)
 function checkTemperature2()
   for i,player in ipairs(getElementsByType("player")) do
     if getElementData(player, "auth") then
-      local value = 0
       if isElementInWater(player) then
+      local value = 0
         value = -0.1
       end
       if getControlState(player, "sprint") then
