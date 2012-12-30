@@ -948,9 +948,9 @@ setTimer(checkTemperature, 60000, 0)
 function checkTemperature2()
   for i,player in ipairs(getElementsByType("player")) do
     if getElementData(player, "auth") then
-      if isElementInWater(player) then
       local value = 0
-        value = -0.1
+	  if isElementInWater(player) then
+		value = -0.1
       end
       if getControlState(player, "sprint") then
         value = value + 0.005
