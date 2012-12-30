@@ -1,8 +1,9 @@
---[[ GUI.LUA		drline 2012
+﻿--[[ GUI.LUA		drline 2012
 
-	keep on movin
+	todo: fix / update
 
 --]]
+
 
 --VARIABLES
 local statsLabel = {}
@@ -10,6 +11,17 @@ local fading = 0
 local fading2 = "up"
 local screenWidth,screenHeight = guiGetScreenSize()
 local whiteWindow
+
+
+--FUNCTIONS
+ --util
+function math.round(number, decimals, method)
+    decimals = decimals or 0
+    local factor = 10 ^ decimals
+    if (method == "ceil" or method == "floor") then return math[method](number * factor) / factor
+    else return tonumber(("%."..decimals.."f"):format(number)) end
+end
+
 
 --GUI ELEMENTS
  --debug monitor
@@ -87,6 +99,7 @@ function refreshDebugMonitor()
 	end			
 end
 setTimer(refreshDebugMonitor,2000,0)
+
  --icons
 function updateIcons () --MAGIC MAGIC MAGIC MAGIC MAGIC
 if getElementData(localPlayer,"auth") then
@@ -257,6 +270,7 @@ if getElementData(localPlayer,"auth") then
 end	
 end
 addEventHandler ( "onClientRender", getRootElement(), updateIcons )
+
  --death screen
 function dayZDeathInfo ()
 	fadeCamera (false, 1.0, 0, 0, 0 ) 
@@ -274,6 +288,7 @@ function showDayZDeathScreen()
 	setTimer(destroyElement,5000,1,deathText)
 	setTimer(destroyElement,5000,1,deadBackground)
 end
+
  --whiteflash
 function createFlashWnd()
 	whiteWindow = guiCreateStaticImage(0,0,1,1,"client/image/white.png",true)
@@ -306,7 +321,344 @@ function showWhiteScreen ( attacker, weapon, bodypart )
 end
 addEventHandler ( "onClientPlayerDamage", localPlayer, showWhiteScreen )
 
---init
+--gps blips???
+--[[function showBlipGps()
+function showBlipGPS ()
+local blips = getElementsByType("player")
+if getElementData(localPlayer,"Thermal GPS") >= 1 then
+	for index, blip in ipairs(blips) do
+		local player = getElementData(blip,"player")
+		setBlipVisibleDistance(blip,0)
+		if getElementData(player,"temperature") >= 40 then
+			if getElementData(player,"GPS Jammer") >= 1 then
+				setBlipVisibleDistance(blip,0)
+			else
+				setBlipVisibleDistance(blip,180)
+			end
+		end	
+	end
+end	
+end	--]]
+--setTimer(showBlipGPS,500,0)
+--addEventHandler ( "onClientHUDRender", getRootElement(), showBlipGPS ) 
+--[[function destroyBlipGPS () --why this is commented out ill never know; maybe i should FIGURE IT OUT
+function destroyBlipGPS ()
+local blips = getElementsByType("blip")
+	for index, blip in ipairs(blips) do
+		destroyElement(blip)
+	end
+local players = getElementsByType("player")
+	for index, player in ipairs(players) do
+		local blip = createBlipAttachedTo(player,0,2,255,255,255,180)
+		setElementData(blip,"player",player)
+		setBlipVisibleDistance(blip,0)
+	end	
+end --]]
+--setTimer(destroyBlipGPS,5000,0) 
+
+--Support Chat (no support for now)
+--[[ clean me up please
+supportWindow = guiCreateStaticImage(0.05,0.25,0.9,0.5,"client/image/scrollmenu_1.png",true)
+guiSetVisible(supportWindow,false)
+supportGridlist = guiCreateGridList ( 0.05,0.1,0.9,0.7,true,supportWindow)
+nameColumn = guiGridListAddColumn( supportGridlist, "Name", 0.2 )
+messageColumn = guiGridListAddColumn( supportGridlist, "Message", 0.8 )
+messageInput = guiCreateEdit( 0.05, 0.825, 0.9, 0.075, "", true,supportWindow )
+closeButton = guiCreateButton( 0.9, 0.015, 0.09, 0.05, "Close!", true, supportWindow )
+
+function openSupportChat ()
+	local showing = guiGetVisible(supportWindow)
+	guiSetVisible(supportWindow,not showing)
+	showCursor(not showing)
+	toggleControl ("chatbox",showing)
+	if showing == false then
+		unbindKey("o","down",openSupportChat)
+		unbindKey("j","down",showInventory)
+	else
+		bindKey("o","down",openSupportChat)
+		bindKey ("j","down",showInventory)
+	end
+end
+bindKey("o","down",openSupportChat)
+
+function outputEditBox ()
+      local showing = guiGetVisible(supportWindow)
+	guiSetVisible(supportWindow,false)
+	showCursor(false)
+	toggleControl ("chatbox",true) 
+	bindKey("o","down",openSupportChat)
+	bindKey ("j","down",showInventory)
+end
+addEventHandler ( "onClientGUIClick", closeButton, outputEditBox, false )
+
+addEventHandler( "onClientGUIAccepted", messageInput,
+    function( theElement ) 
+		if not isSpamTimer() then
+			local text = guiGetText( theElement )
+			triggerServerEvent ( "onServerSupportChatMessage", localPlayer,localPlayer,text)
+		end
+		setAntiSpamActive()
+		guiSetText(messageInput,"")
+    end
+)
+
+function outputSupportChat(sourcePlayer,text)
+		local row = guiGridListAddRow ( supportGridlist )
+		if sourcePlayer == "Sandra" or sourcePlayer == "James" or sourcePlayer == "Paul" then
+			name =  sourcePlayer.." (Bot)"
+		elseif not getElementData(sourcePlayer,"auth") then
+			name = string.gsub(getPlayerName ( sourcePlayer ), '#%x%x%x%x%x%x', '').." (Guest)"
+		else
+			if getElementData(sourcePlayer,"admin") then
+				name = string.gsub(getPlayerName ( sourcePlayer ), '#%x%x%x%x%x%x', '').." (Admin)"
+			elseif getElementData(sourcePlayer,"supporter") then
+				name = string.gsub(getPlayerName ( sourcePlayer ), '#%x%x%x%x%x%x', '').." (Supporter)"
+			else
+				name = string.gsub(getPlayerName ( sourcePlayer ), '#%x%x%x%x%x%x', '').." (Player)"
+			end
+		end
+		guiGridListSetItemText ( supportGridlist, row, nameColumn, name, false, false )
+		guiGridListSetItemText ( supportGridlist, row, messageColumn,text , false, false )
+		if sourcePlayer == "Sandra" then 
+			r,g,b = 255,30,120
+		elseif sourcePlayer == "James" or sourcePlayer == "Paul" then
+			r,g,b = 255,255,22
+		elseif getElementData(sourcePlayer,"admin") then
+			r,g,b = 255,22,0
+		elseif getElementData(sourcePlayer,"supporter") then
+			r,g,b = 22,255,0
+		else
+			r,g,b = 255,255,255
+		end
+		guiGridListSetItemColor ( supportGridlist, row, nameColumn, r, g, b )
+end
+addEvent("onSupportChatMessage",true)
+addEventHandler("onSupportChatMessage", getRootElement(),outputSupportChat,true)
+
+--antispam
+local antiSpamTimer = {}
+function setAntiSpamActive()
+	if not isTimer(antiSpamTimer) then
+		antiSpamTimer = setTimer(killAntiSpamTimer,1000,1)
+	else
+		killTimer(antiSpamTimer)
+		antiSpamTimer = setTimer(killAntiSpamTimer,2500,1)
+	end
+end
+
+function isSpamTimer()
+	if isTimer(antiSpamTimer) then 
+		outputChatBox("Dont Spam the Support Chat", 255, 255, 0,true)
+		return true
+	else
+		return false
+	end
+end
+
+function killAntiSpamTimer ()
+killTimer(antiSpamTimer)
+end
+--]]
+
+--scoreboard
+function getRankingPlayer (place)
+return playerRankingTable[place]["Player"]
+end
+
+function getElementDataPosition(key,value)
+	if key and value then
+		local result = 1
+		for i,player in pairs(getElementsByType("player")) do
+			local data = tonumber(getElementData(player,key))
+			if data then
+				if data > value then 
+					result = result+1
+				end
+			end
+		end
+		return result
+	end
+end
+
+function positionGetElementData(key, positions)
+	if key and positions then
+		local Position = {}
+		for index,player in pairs(getElementsByType("player")) do
+			local data = tonumber(getElementData(player,key))
+			if data then
+				for i1=1, positions, 1 do
+					if Position[tonumber(i1)] then
+						if Position[tonumber(i1)]["Wert"] < tonumber(data) then
+							local Position_Cache1 = Position[tonumber(i1)]["Player"]
+							local Position_Cache2 = Position[tonumber(i1)]["Wert"]
+							local Position_Cache3
+							local Position_Cache4
+							for i2=i1, positions, 1 do
+								if Position[tonumber(i2)] then
+									Position_Cache3 = Position[tonumber(i2)]["Player"]
+									Position_Cache4 = Position[tonumber(i2)]["Wert"]
+									Position[tonumber(i2)]["Player"] = Position_Cache1
+									Position[tonumber(i2)]["Wert"] = Position_Cache2
+									Position_Cache1 = Position_Cache3
+									Position_Cache2 = Position_Cache4
+								else
+									Position[tonumber(i2)] = {}
+									Position[tonumber(i2)]["Player"] = Position_Cache1
+									Position[tonumber(i2)]["Wert"] = Position_Cache2
+									break
+								end
+							end
+							Position[tonumber(i1)] = {}
+							Position[tonumber(i1)]["Player"] = player
+							Position[tonumber(i1)]["Wert"] = data
+							break
+						end
+					else
+						Position[tonumber(i1)] = {}
+						Position[tonumber(i1)]["Player"] = player
+						Position[tonumber(i1)]["Wert"] = data
+						break
+					end
+				end
+			end
+		end
+		return Position
+	end
+end
+
+function roundTime(value)
+	if value then
+		local theTime = getRealTime(value*60)
+		local yearday = theTime.yearday
+		local hours = theTime.hour
+		local minutes = theTime.minute
+		return hours+((yearday*24)-1)..":"..minutes
+	end
+	return false
+end
+
+playerRankingTable = {}
+
+function checkTopPlayer()
+playerRankingTable = positionGetElementData("alivetime", #getElementsByType("player"))
+end
+checkTopPlayer()
+setTimer(checkTopPlayer,10000,0)
+
+function onQuitGame( reason )
+    checkTopPlayer()
+end
+addEventHandler( "onClientPlayerQuit", getRootElement(), onQuitGame )
+
+yA = 0
+local screenWidth,screenHeight = guiGetScreenSize()
+function scoreBoard () --MORE MAGIC 
+if getKeyState( "tab" ) == false then return end
+if getElementData(localPlayer,"auth") then
+local offset = dxGetFontHeight(1.55,"default-bold")
+--Background
+dxDrawImage ( screenWidth*0.15 , screenHeight*0.2, screenWidth*0.7, screenHeight*0.2+yA, "client/image/window_bg.png",0,0,0,tocolor(255,255,255))
+
+--Table Form
+dxDrawRectangle ( screenWidth*0.15, screenHeight*0.2+offset*2, screenWidth*0.7, screenHeight*0.0025, tocolor ( 255, 255, 255, 220 ) )
+
+--Table Spalten
+	--Name
+	dxDrawText ("Name", screenWidth*0.175 , screenHeight*0.2+offset, screenWidth*0.175 , screenHeight*0.2+offset, tocolor ( 50, 255, 50, 200 ), 1.5, "default-bold" )
+	w1 = dxGetTextWidth("Name",1.5,"default-bold")
+	--Murders
+	dxDrawText ("Murders", screenWidth*0.3+w1*1.6, screenHeight*0.2+offset, screenWidth*0.3+w1*1.6 , screenHeight*0.2+offset, tocolor ( 50, 255, 50, 200 ), 1.5, "default-bold" )
+	w2 = dxGetTextWidth("Murders",1.5,"default-bold")
+	dxDrawRectangle ( screenWidth*0.3+w1*1.6-w2*0.1-(screenWidth*0.0025/2), screenHeight*0.2, screenWidth*0.0025, screenHeight*0.2+yA, tocolor ( 255, 255, 255, 220 ) )
+	dxDrawRectangle ( screenWidth*0.3+w1*1.6+w2*1.1-(screenWidth*0.0025/2), screenHeight*0.2, screenWidth*0.0025, screenHeight*0.2+yA, tocolor ( 255, 255, 255, 220 ) )
+	
+	--Zombies Killed
+	dxDrawText ("Zombies Killed", screenWidth*0.3+w1*1.6+w2*1.1-(screenWidth*0.0025/2)+w2*0.1, screenHeight*0.2+offset, screenWidth*0.3+w1*1.6 , screenHeight*0.2+offset, tocolor ( 50, 255, 50, 200 ), 1.5, "default-bold" )
+	w3 = dxGetTextWidth("Zombies Killed",1.5,"default-bold")
+	dxDrawRectangle ( screenWidth*0.3+w1*1.6+w2*1.1+w3+w2*0.1+(screenWidth*0.0025/2), screenHeight*0.2, screenWidth*0.0025, screenHeight*0.2+yA, tocolor ( 255, 255, 255, 220 ) )
+	
+	--Zombies Killed
+	dxDrawText ("Alive Time", screenWidth*0.3+w1*1.6+w2*1.1+w3+w2*0.1+(screenWidth*0.0025/2)+w2*0.1, screenHeight*0.2+offset, screenWidth*0.3+w1*1.6 , screenHeight*0.2+offset, tocolor ( 50, 255, 50, 200 ), 1.5, "default-bold" )
+	w4 = dxGetTextWidth("Alive Time",1.5,"default-bold")
+	dxDrawRectangle ( screenWidth*0.3+w1*1.6+w2*1.1+w3+w2*0.1+(screenWidth*0.0025/2)+w2*0.1+w4+w2*0.1, screenHeight*0.2, screenWidth*0.0025, screenHeight*0.2+yA, tocolor ( 255, 255, 255, 220 ) )
+	
+	--Player Amount
+		dxDrawText ("Players:"..#getElementsByType("player"), screenWidth*0.3+w1*1.6+w2*1.1+w3+w2*0.1+(screenWidth*0.0025/2)+w2*0.1+w4+w2*0.1+w4/3, screenHeight*0.2+offset, screenWidth*0.8 , screenHeight*0.2+offset, tocolor ( 50, 255, 50, 200 ), 1.5, "default-bold" )
+
+--Player
+playerInList = false
+local playerAmount = #getElementsByType("player")
+if playerAmount > 10 then
+	playerAmount = 10
+end
+for i = 1, playerAmount do
+	yA = i*offset
+	local offset2 = dxGetFontHeight(1.5,"default-bold")
+	--Spiler Getten
+	local player = getRankingPlayer(i) or false
+	if not player then break end
+	--Abfragen ob spieler == local Player
+	r,g,b = 255,255,255
+	if getPlayerName(player) == getPlayerName(localPlayer) then
+	r,g,b = 50, 255, 50
+	playerInList = true
+	end
+	--dxDrawImage(screenWidth*0.175 , screenHeight*0.2+offset*2+yA-offset2*0.1, screenWidth*0.65, offset2+offset2*0.1,"client/image/background_scoreboard.png", 0,0,0,tocolor(255,255,255,200), false)
+	--Position
+	dxDrawText (i, screenWidth*0.155 , screenHeight*0.2+offset*2+yA, screenWidth*0.175, screenHeight*0.2+offset+yA, tocolor ( r,g,b, 200 ), 1.5, "default-bold" )
+	--Name
+	dxDrawText (string.gsub(getPlayerName(player), '#%x%x%x%x%x%x', '' ), screenWidth*0.175 , screenHeight*0.2+offset*2+yA, screenWidth*0.175, screenHeight*0.2+offset+yA, tocolor ( r,g,b, 200 ), 1.5, "default-bold" )
+	--Murders
+	local murders = getElementData(player,"murders")
+	dxDrawText (murders, screenWidth*0.3+w1*1.6 , screenHeight*0.2+offset*2+yA, screenHeight*0.2+offset*2+yA, screenHeight*0.2+offset+yA, tocolor ( r,g,b, 200 ), 1.5, "default-bold" )
+	--Bandit
+	--local bandit = getElementData(player,"bandit") 
+	--if bandit then
+	--	r1,g1,b1 = 255,0,0
+	--else
+	--	r1,g1,b1 = 0,255,0
+	--end
+	--dxDrawText ("???", screenWidth*0.3+w1*1.6+w2*1.1-(screenWidth*0.0025/2)-w2/2,  screenHeight*0.2+offset*2+yA, screenWidth*0.3+w1*1.6+w2*1.1-(screenWidth*0.0025/2)-w2/2,  screenHeight*0.2+offset*2+yA, tocolor ( r1,g1,b1, 200 ), 1.5, "default-bold" )
+	--Zombies Killed
+	local zombieskilled = getElementData(player,"zombieskilled")
+	dxDrawText (zombieskilled, screenWidth*0.3+w1*1.6+w2*1.1-(screenWidth*0.0025/2)+w2*0.1 , screenHeight*0.2+offset*2+yA, screenWidth*0.175, screenHeight*0.2+offset+yA, tocolor ( r,g,b, 200 ), 1.5, "default-bold" )
+	--Alive Time
+	local alivetime = getElementData(player,"alivetime") or 0
+	dxDrawText (roundTime(alivetime), screenWidth*0.3+w1*1.6+w2*1.1+w3+w2*0.1+(screenWidth*0.0025/2)+w2*0.1 , screenHeight*0.2+offset*2+yA, screenWidth*0.175, screenHeight*0.2+offset+yA, tocolor ( r,g,b, 200 ), 1.5, "default-bold" )
+end
+	playerLocalAdd = 0
+	if not playerInList then
+		playerLocalAdd = offset
+		r,g,b = 50, 255, 50
+		dxDrawRectangle ( screenWidth*0.15, screenHeight*0.2+offset*2+((playerAmount+2)*offset)-offset/2, screenWidth*0.7, screenHeight*0.0025, tocolor ( 255, 255, 255, 220 ) )
+		--Position
+		local rank = getElementDataPosition("alivetime",getElementData(localPlayer,"alivetime"))
+		dxDrawText (rank, screenWidth*0.155 , screenHeight*0.2+offset*2+((playerAmount+2)*offset), screenWidth*0.175, screenHeight*0.2+offset*2+((playerAmount+2)*offset), tocolor ( r,g,b, 200 ), 1.5, "default-bold" )
+		--Name
+		dxDrawText (string.gsub(getPlayerName(localPlayer), '#%x%x%x%x%x%x', '' ), screenWidth*0.175 , screenHeight*0.2+offset*2+((playerAmount+2)*offset), screenWidth*0.175, screenHeight*0.2+offset+((playerAmount+2)*offset), tocolor ( r,g,b, 200 ), 1.5, "default-bold" )
+		--Murders
+		local murders = getElementData(localPlayer,"murders")
+		dxDrawText (murders, screenWidth*0.3+w1*1.6 , screenHeight*0.2+offset*2+((playerAmount+2)*offset), screenWidth*0.175, screenHeight*0.2+offset+((playerAmount+2)*offset), tocolor ( r,g,b, 200 ), 1.5, "default-bold" )
+		--Zombies Killed
+		local zombieskilled = getElementData(localPlayer,"zombieskilled")
+		dxDrawText (zombieskilled, screenWidth*0.3+w1*1.6+w2*1.1-(screenWidth*0.0025/2)+w2*0.1 , screenHeight*0.2+offset*2+((playerAmount+2)*offset), screenWidth*0.175, screenHeight*0.2+offset+((playerAmount+2)*offset), tocolor ( r,g,b, 200 ), 1.5, "default-bold" )
+		--Alive Time
+		local alivetime = getElementData(localPlayer,"alivetime") or 0
+		dxDrawText (roundTime(alivetime), screenWidth*0.3+w1*1.6+w2*1.1+w3+w2*0.1+(screenWidth*0.0025/2)+w2*0.1 , screenHeight*0.2+offset*2+((playerAmount+2)*offset), screenWidth*0.175, screenHeight*0.2+offset+((playerAmount+2)*offset), tocolor ( r,g,b, 200 ), 1.5, "default-bold" )
+	end
+	yA = playerAmount*offset+playerLocalAdd
+end	
+end
+addEventHandler ( "onClientRender", getRootElement(), scoreBoard )
+function updatePlayTime()
+	if getElementData(localPlayer,"auth") then
+		local playtime = getElementData(localPlayer,"alivetime")
+		setElementData(localPlayer,"alivetime",playtime+1)	
+	end	
+end
+setTimer(updatePlayTime, 60000, 0)
+
+--INIT
 function guiInitHandler()
 	local err,wnd = nil,nil
 	

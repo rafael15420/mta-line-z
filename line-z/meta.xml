@@ -8,6 +8,7 @@
     <script src="client/lua/ci.lua" type="client" />        
     
 	<script src="client.lua" type="client" />
+	<script src="client/lua/gui.lua" type="client" />
     <script src="client/lua/animals.lua" type="client" />
     <script src="client/lua/inventory.lua" type="client" />
     <script src="client/lua/menu.lua" type="client" />
@@ -130,46 +131,51 @@
     <file src="client/item/wirefence.dff" />
     <min_mta_version client="1.3.0-9.04555" />
 
+	<!-- imported resources -->
 
 	<!-- <info author="Churchill" type="script" name="BetterWeather" version="1.0.1" description="A more realistic weather system" /> -->
-	<script src="betterWeather/BetterWeather.lua" />  
-			
-	<!-- this block can be commented out if you plan to call this resource from another resource-->
-	<script src="betterWeather/BetterWeather_c.lua" type="client" />  
-	<script src="betterWeather/OptionalClientScript.lua" type="client" />  
-	<script src="betterWeather/OptionalServerScript.lua" type="server" />  
-	<config src="betterWeather/optional.xml" type="client" />
-	<file src="betterWeather/img/Day/0.png" raw="true" />
-	<file src="betterWeather/img/Day/1.png" raw="true" />
-	<file src="betterWeather/img/Day/2.png" raw="true" />
-	<file src="betterWeather/img/Day/3.png" raw="true" />
-	<file src="betterWeather/img/Day/4.png" raw="true" />
-	<file src="betterWeather/img/Day/5.png" raw="true" />
-	<file src="betterWeather/img/Day/6.png" raw="true" />
-	<file src="betterWeather/img/Day/7.png" raw="true" />
-	<file src="betterWeather/img/Day/8.png" raw="true" />
-	<file src="betterWeather/img/Day/9.png" raw="true" />
-	<file src="betterWeather/img/Day/10.png" raw="true" />
-	<file src="betterWeather/img/Night/0.png" raw="true" />
-	<file src="betterWeather/img/Night/1.png" raw="true" />
-	<file src="betterWeather/img/Night/2.png" raw="true" />
-	<file src="betterWeather/img/Night/3.png" raw="true" />
-	<file src="betterWeather/img/Night/4.png" raw="true" />
-	<file src="betterWeather/img/Night/5.png" raw="true" />
-	<file src="betterWeather/img/Night/6.png" raw="true" />
-	<file src="betterWeather/img/Night/7.png" raw="true" />
-	<!--end of optional code -->
+		<script src="betterWeather/BetterWeather.lua" />  
+		
+		<!-- this block can be commented out if you plan to call this resource from another resource-->
+		<script src="betterWeather/BetterWeather_c.lua" type="client" />  
+		<script src="betterWeather/OptionalClientScript.lua" type="client" />  
+		<script src="betterWeather/OptionalServerScript.lua" type="server" />  
+		<config src="betterWeather/optional.xml" type="client" />
+		<file src="betterWeather/img/Day/0.png" raw="true" />
+		<file src="betterWeather/img/Day/1.png" raw="true" />
+		<file src="betterWeather/img/Day/2.png" raw="true" />
+		<file src="betterWeather/img/Day/3.png" raw="true" />
+		<file src="betterWeather/img/Day/4.png" raw="true" />
+		<file src="betterWeather/img/Day/5.png" raw="true" />
+		<file src="betterWeather/img/Day/6.png" raw="true" />
+		<file src="betterWeather/img/Day/7.png" raw="true" />
+		<file src="betterWeather/img/Day/8.png" raw="true" />
+		<file src="betterWeather/img/Day/9.png" raw="true" />
+		<file src="betterWeather/img/Day/10.png" raw="true" />
+		<file src="betterWeather/img/Night/0.png" raw="true" />
+		<file src="betterWeather/img/Night/1.png" raw="true" />
+		<file src="betterWeather/img/Night/2.png" raw="true" />
+		<file src="betterWeather/img/Night/3.png" raw="true" />
+		<file src="betterWeather/img/Night/4.png" raw="true" />
+		<file src="betterWeather/img/Night/5.png" raw="true" />
+		<file src="betterWeather/img/Night/6.png" raw="true" />
+		<file src="betterWeather/img/Night/7.png" raw="true" />
+		<!--end of optional code -->
 	
-	<export function="GetTodaysWeatherDescriptions" http="true" />
-	<export function="GetTodaysWeatherIDs" http="true" />
-	<export function="GetAllWeatherDescriptions" http="true" />
-	<export function="GetAllWeatherIDs" http="true" />
-	<export function="GetDayWeatherDescription" http="true" />
-	<export function="GetNightWeatherDescription" http="true" />
-	
+		<export function="GetTodaysWeatherDescriptions" http="true" />
+		<export function="GetTodaysWeatherIDs" http="true" />
+		<export function="GetAllWeatherDescriptions" http="true" />
+		<export function="GetAllWeatherIDs" http="true" />
+		<export function="GetDayWeatherDescription" http="true" />
+		<export function="GetNightWeatherDescription" http="true" />
+	<!-- end betterweather -->
 	
 	<!-- <info author="uPrell" name="glue"  version="1.0" type="script"/> -->
-	<script src="glue/glue.lua" type="client" />
-	<script src="glue/glueS.lua" type="server" />
-
+		<script src="glue/glue.lua" type="client" />
+		<script src="glue/glueS.lua" type="server" />
+	<!-- end glue -->
+	
+	<!--  -->
+	
+	<!-- end boneattach -->
 </meta>
