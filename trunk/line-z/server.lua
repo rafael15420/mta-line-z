@@ -19,90 +19,90 @@ TODO: 	finish item funcs (0%; still needs to be done [STEALSTEALSTEAL])
 ]]--
 
 --VARIABLES YO
-					-- 1,   2,   3,     4,  5,    6
-local invMaster = { --id,init,name,weight,dmg,gtaID 
+					--			      1,  2,   3,     4
+local invMaster = { --[itemID][n]= name, kg, dmg, extra
 	--THE PLAN: both client and server have a master inventory list of all values for inventory items.
 	--that way simple standardized calls to this list can be made. item 37 will always be item 37 etc.
 	--NAMES AND VALUES WILL BE ABLE TO BE CHANGED WITHOUT FUCKING EVERYTHING UP. THIS IS GOOD. 
-	--hell i may just make the client download the table at join (THAT WAY THERES ONLY 1 COPY. NO DESYNCS)
-	--i may even nest / alter the list protocol a bit. right now its managable(ish)
-	--THIS IS ALL WAITING ON CLIENT.LUA STANDARDIZATION / UPDATE  G E T  T O  W O R K
+	--client downloads the master at join
+		
 	--prim weps
-	{1,0,"M4",3,6722,31}, 
-	{2,0,"Sniper Rifle",3,7522,34},
-	{3,0,"Shotgun",3,2024,25},
-	{4,0,"SPAZ-12 Combat Shotgun",3,4582,27},
-	{5,0,"Sawn-Off Shotgun",3,2894,26},
-	{6,0,"AK-47",3,3555,30},
-	{7,0,"Heat-Seeking RPG",5,37552,36},
-	{8,0,"Rocket Launcher",5,37552,35},
-	{9,0,"Country Rifle",3,6722,33},
+	[101] = {"M4",3,6722,31}, 
+	[102] = {"Sniper Rifle",3,7522,34},
+	[103] = {"Shotgun",3,2024,25},
+	[104] = {"SPAZ-12 Combat Shotgun",3,4582,27},
+	[105] = {"Sawn-Off Shotgun",3,2894,26},
+	[106] = {"AK-47",3,3555,30},
+	[107] = {"Heat-Seeking RPG",5,37552,36},
+	[108] = {"Rocket Launcher",5,37552,35},
+	[109] = {"Country Rifle",3,6722,33},
 	--sec weps	
-	{10,0,"Pistol",2,889,22},
-	{11,0,"Silenced Pistol",2,889,23},
-	{12,0,"Uzi",2,889,28},
-	{13,0,"TEC-9",2,889,32},
-	{14,0,"MP5",3,1196,29},
-	{15,0,"Desert Eagle",2,2489,24},
-	{16,0,"Knife",1,1500,4},
-	{17,0,"Katana",2,2100,8},
+	[201] = {"Pistol",2,889,22},
+	[202] = {"Silenced Pistol",2,889,23},
+	[203] = {"Uzi",2,889,28},
+	[204] = {"TEC-9",2,889,32},
+	[205] = {"MP5",3,1196,29},
+	[206] = {"Desert Eagle",2,2489,24},
+	[207] = {"Knife",1,1500,4},
+	[208] = {"Katana",2,2100,8},
 	--spec	
-	{18,0,"Parachute",1,0,46},
-	{19,0,"Tear Gas",1,0,17},
-	{20,0,"Grenade",1,18000,16},	
+	[301] = {"Parachute",1,0,46},
+	[302] = {"Tear Gas",1,0,17},
+	[303] = {"Grenade",1,18000,16},	
 	--ammo
-	{21,0,"Rocket Ammo",2},
-	{22,0,"Sniper Ammo",0.1},
-	{23,0,"Smg Ammo",0.025},
-	{24,0,"Assault Ammo",0.035},
-	{25,0,"Pistol Ammo",0.085},
-	{26,0,"Shotgun Ammo",0.067},
+	[401] = {"Rocket Ammo",2},
+	[402] = {"Sniper Ammo",0.1},
+	[403] = {"Smg Ammo",0.025},
+	[404] = {"Assault Ammo",0.035},
+	[405] = {"Pistol Ammo",0.085},
+	[406] = {"Shotgun Ammo",0.067},
 	--food
-	{27,0,"Water Bottle",1,50},
-	{28,0,"Pasta Can",1,200},
-	{29,0,"Beans Can",1,200},
-	{30,1,"Burger",1,300},
-	{31,0,"Pizza",1,500},
-	{32,0,"Soda Bottle",1,100},
-	{33,0,"Milk",1,250},
-	{34,0,"Cooked Meat",1,800},
+	[501] = {"Water Bottle",1,50},
+	[502] = {"Pasta Can",1,200},
+	[503] = {"Beans Can",1,200},
+	[504] = {"Burger",1,300},
+	[505] = {"Pizza",1,500},
+	[506] = {"Soda Bottle",1,100},
+	[507] = {"Milk",1,250},
+	[508] = {"Cooked Meat",1,800},
 	--misc
-	{35,0,"Wood",2},
-	{36,2,"Bandage",1},
-	{37,0,"Roadflare",1},
-	{38,0,"Empty Patrol Canister",2},
-	{39,0,"Full Patrol Canister",2},
-	{40,0,"Medic Kit",2},
-	{41,0,"Heat Pack",1},
-	{42,1,"Painkiller",1},
-	{43,0,"Morphine",1},
-	{44,0,"Blood Bag",1},
-	{45,0,"Wire Fence",1},
-	{46,0,"Raw Meat",1},
-	{47,0,"Tire",2},
-	{48,0,"Engine",5},
-	{49,0,"Tent",3},
-	{50,0,"Army Skin",1},
-	{51,0,"Civilian Skin",1},
-	{52,0,"Standart Skin",1},
-	{53,0,"Sniper Skin",1},
-	{54,0,"Empty Bottle",1},
-	{55,0,"Tin Can",1},
-	{56,0,"Scruffy Burgers",1},
-	{57,0,"Alice Backpack",1},
-	{58,0,"Small Backpack",1},
-	{59,0,"Coyote Backpack",1},
+	[601] = {"Wood",2},
+	[602] = {"Bandage",1},
+	[603] = {"Roadflare",1},
+	[604] = {"Empty Patrol Canister",2},
+	[605] = {"Full Patrol Canister",2},
+	[606] = {"Medic Kit",2},
+	[607] = {"Heat Pack",1},
+	[608] = {"Painkiller",1},
+	[609] = {"Morphine",1},
+	[610] = {"Blood Bag",1},
+	[611] = {"Wire Fence",1},
+	[612] = {"Raw Meat",1},
+	[613] = {"Tire",2},
+	[614] = {"Engine",5},
+	[615] = {"Tent",3},
+	[616] = {"Army Skin",1},
+	[617] = {"Civilian Skin",1},
+	[618] = {"Standart Skin",1},
+	[619] = {"Sniper Skin",1},
+	[620] = {"Empty Bottle",1},
+	[621] = {"Tin Can",1},
+	[622] = {"Scruffy Burgers",1},
+	[623] = {"Alice Backpack",1},
+	[624] = {"Small Backpack",1},
+	[625] = {"Coyote Backpack",1},
 	--tools
-	{60,0,"Night Vision Goggles",1},
-	{61,0,"Infrared Goggles",1},
-	{62,0,"Map",1},
-	{63,0,"Lighter",1},
-	{64,0,"Watch",1},
-	{65,0,"GPS",1},
-	{66,0,"Toolbox",1},
-	{67,0,"Binocular",1},
-	{68,0,"Radio Device",1},
+	[701] = {"Night Vision Goggles",1},
+	[702] = {"Infrared Goggles",1},
+	[703] = {"Map",1},
+	[704] = {"Lighter",1},
+	[705] = {"Watch",1},
+	[706] = {"GPS",1},
+	[707] = {"Toolbox",1},
+	[708] = {"Binocular",1},
+	[709] = {"Radio Device",1},
 }
+
 local initInvTab = { --THIS IS GONNA GO (already in master)
 	["M4"] = 0,
 	["Sniper Rifle"] = 0,
@@ -239,6 +239,12 @@ local weaponAmmoTable = { --this will go into master aswell
 
 
 --FUNctions TODO: organize this
+function createObjectEx(model,px,py,pz,rx,ry,rz,i,d,bIsLowLOD)
+	local objTemp = createObject(model,px,py,pz,rx,ry,rz,bIsLowLOD)
+	setElementInterior(objTemp,i)
+	setElementDimension(objTemp,d)
+	return objTemp
+end
 function getWeaponAmmoType(weaponName, notOthers) --FUTR: update to work with invMaster
   if not notOthers then
     for i,weaponData in ipairs(weaponAmmoTable.others) do
@@ -310,28 +316,16 @@ function initVeh(eVeh) --TODO(80%): NEW PLANS:
 		oh baby		
 		call me
 
-		i will lootzone a vehicle
+		i will interactZone a vehicle
 		
-		i will set up OLDINV for that vehicle on that zone (OLDINV is my newname for the old inventory system isnt that clever)
+		(for now) i will set up OLDINV for that vehicle on that zone (OLDINV is my newname for the old inventory system isnt that clever)
 		
 		thats it (remember to make way for NEWINV aka invMaster)
 			
 		function is STILL designed to be called on individual vehicles
 		
-		maximum values are pulled from .map data (table these, custom vehicle ent is fucking up editor)
+		(for now) maximum values are pulled from .map data (eventually table these, custom vehicle ent is fucking up editor)
 	--]]
-	
-	--[[ this is how the spawn logic works:
-		2/5 chance to spawn vehicle with only one zero'd out part (either fuel/tires/or engine)
-			the other parts would have random amounts, but atleast 1.
-			
-		1/5 chance to spawn vehicle with all zero'd out parts
-		
-		the other 2/5 chance will spawn vehicles with random part amounts
-		
-		CHANCES OF A FULLY LOADED VEHICLE ARE VERY SLIM		
-	--]]
-	
 	
 	--todo: dig max values from table, setElementData
 	local eVehExt,e,t,f,x = getElementData(eVeh, "Ext"),
@@ -496,52 +490,42 @@ function deathHelper(ePlr) --this is incredibly stupid i dont know why i moved a
 			end,2000,1)
 end
 function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF "MAGIC" HAPPENS HERE --it has to happen somewhere
-	---[[debug stuff
+---[[debug stuff
 	outputChatBox("creating '"..tostring(thingType).."'") --]]
 	local x,y,z = getElementPosition(ePlr)
-			  z = z-0.77
+			  z = z-0.77 --this should be the floor
 	local _,_,r = getElementRotation(ePlr)
-	local i,d,eCon,msLifetime,bLoot,tObj = getElementInterior(ePlr), --interior of player
+	local i,d,eCon,msLifetime,bInteract,tObj = getElementInterior(ePlr), --interior of player
 										   getElementDimension(ePlr), --dimension of player
 										   getPedContactElement(ePlr), --we standin on anything?
 										   900000, --15 minutes
-										   false, --default shit wont have an interact zone (which is what i should call them instead of lootzones but w/e)
+										   false, --default shit wont have an interact zone 
 										   {} --table of new objects
 	if thingType == "fireplace" then --todo: register fireplaces to players; make sure they can only have ONE (or two? who knows ill do this later)
-		bLoot = true
-		tObj[1] = createObject(1463,x,y,z,0,0,r) --todo: createObject wrapper that does interiors and dimensions 
-			setElementInterior(tObj[1],i)
-			setElementDimension(tObj[1],d)
+		bInteract = true
+		tObj[1] = createObjectEx(1463,x,y,z,0,0,r,i,d)
 			setElementFrozen(tObj[1],true)
 			--setElementCollisionsEnabled(tObj[1],false) --maybe figure out a way to stop the dynamic wood from busting apart WITHOUT REMOVING COLLISIONS
 			setObjectScale(tObj[1],0.5)
-		tObj[2] = createObject(3525,x,y,z-0.77,0,0,r)
-			setElementInterior(tObj[2],i)
-			setElementDimension(tObj[2],d)
+		tObj[2] = createObjectEx(3525,x,y,z-0.77,0,0,r,i,d)
 			setElementFrozen(tObj[2],true)
 			setObjectScale(tObj[1],0.5)
 			setElementCollisionsEnabled(tObj[2],false)
 			setElementAlpha(tObj[2],0)
 			setElementParent(tObj[2],tObj[1])
 	elseif thingType == "tent" then --todo: register tents to players; maybe give them a locator blip (again max tents = 3? we'll see)
-		msLifetime,bLoot = false,true --TENTS LIVE FOREVER AHAHAHAHAH
-		tObj[1] = createObject(3243,x,y,z,0,0,r)
-			setElementInterior(tObj[1],i)
-			setElementDimension(tObj[1],d)
+		msLifetime,bInteract = false,true --TENTS LIVE FOREVER AHAHAHAHAH
+		tObj[1] = createObjectEx(3243,x,y,z,0,0,r,i,d)
 			setObjectScale(tObj[1],0.5)
 			setElementFrozen(tObj[1],true)
 	elseif thingType == "fence" then --todo: register fences to players; im spotting a trend here (maybe secure fences in the future)
-		msLifetime,bLoot = false,true --FENCES ALSO LIVE FOREVER (atleast until the server goes down RIP)
-		tObj[1] = createObject(983,x,y,z,0,0,r)
-			setElementInterior(tObj[1],i)
-			setElementDimension(tObj[1],d)
+		msLifetime,bInteract = false,true --FENCES ALSO LIVE FOREVER (atleast until the server goes down RIP)
+		tObj[1] = createObjectEx(983,x,y,z,0,0,r,i,d)
 			--setObjectScale(tObj[1],1) --kept for posterity
 			setElementFrozen(tObj[1],true)
 	elseif thingType == "flare" then --flares will not register to players (i doubt flare spam will be a problem)
 		msLifetime = 150000 --2.5 minutes
-		tObj[1] = createObject(354,x,y,z,0,0,r)
-			setElementInterior(tObj[1],i)
-			setElementDimension(tObj[1],d)
+		tObj[1] = createObjectEx(354,x,y,z,0,0,r,i,d)
 			setObjectScale(tObj[1],0.5)
 			setElementFrozen(tObj[1],true)
 	end
@@ -550,8 +534,8 @@ function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF "MA
 		attachElements(tObj[1],eCon,px,py,pz,rx,ry,rz)
 		if thingType == "fireplace" then attachElements(tObj[2],eCon,px,py,pz-0.77,rx,ry,rz) end --anything made up of 2 objects or more will need a case down here FOR ALIGNMENT REASONS
 		setElementParent(tObj[1],eCon) --we family now
-		if bLoot then createLootZone(tObj[1],thingType,true) end --ATTACHED LOOT ZONES WHY
-	elseif bLoot then
+		if bInteract then createLootZone(tObj[1],thingType,true) end --ATTACHED LOOT ZONES WHY
+	elseif bInteract then
 		createLootZone(tObj[1],thingType)
 	end
 	if msLifetime then setTimer(destroyElement,msLifetime,1,tObj[1]) end
@@ -622,6 +606,7 @@ function addPlayerStats(player, data, value) --todo: figure me out
   end
 end
 
+
 --NEW EVENTS | FUTR: combine thing stuff into thingHandler
 function loginHandler(u,p,t) --DONE(99%) EVENTUALLY SS THE TRY CHECKS (far future)
 	if (not u) or (not p) or (not t) then --for safety
@@ -674,23 +659,25 @@ function loginHandler(u,p,t) --DONE(99%) EVENTUALLY SS THE TRY CHECKS (far futur
 	initPlayer(client) --initialize OLDINV (this is getting removed/updated)
 	loadPlrInv(client) --load saved inv (todo: NEW PLAYERS WOULD GET *random* ITEMS HERE)
 	setAccountData(usrAcct, "line-z.sav", 0) --PLAYER INVENTORY IS NOW UNSAFE; SERVER GOES DOWN THEYRE FUCKED (unless the db doesnt save)
+	triggerClientEvent(client,"cInvMasterRecv",client,invMaster) --send em invMaster
 	spawnPlr(client) --WELCOME TO THE WASTELAND
 	outputChatBox("Welcome to DIE", client) --PREPARE TO DIE (and stop wasting time making stupid useless comments)
 end
 addEvent("onLoginTry", true)
 addEventHandler("onLoginTry", root, loginHandler)
+
 function rcsHandler(item,prop) --DONE(99%) FUTR: update to work with invMaster | stays
 	local amt = itemCheck(source, item)
 	if amt then
-		if item == invMaster[27][3] or item == invMaster[32][3] then
-			local item2 = invMaster[54][3]
+		if item == invMaster[501][1] or item == invMaster[506][1] then --water bottle || soda bottle
+			local item2 = invMaster[620][1] --empty bottle
 			local amt2 = getElementData(source, item2)
 			if (not amt2) then
 				amt2 = 0
 			end
 			setElementData(source, item2, amt2+1)
-		elseif item == invMaster[28][3] or item == invMaster[29][3] then
-			local item2 = invMaster[55][3]
+		elseif item == invMaster[502][1] or item == invMaster[503][1] then --beans can || pasta can
+			local item2 = invMaster[621][1] --emtpy can
 			local amt2 = getElementData(source, item2)
 			if (not amt2) then
 				amt2 = 0
@@ -699,16 +686,16 @@ function rcsHandler(item,prop) --DONE(99%) FUTR: update to work with invMaster |
 		end
 		setElementData(source, item, amt-1)
 		local bloodAdd
-		for i=27,34 do
-			if invMaster[i][3] == item then
-				bloodAdd = invMaster[i][5]
+		for i=501,508 do --all food/drink
+			if invMaster[i][1] == item then
+				bloodAdd = invMaster[i][3]
 			end
 		end
 		bloodAdd = bloodAdd + getElementData(source, "blood")
 		if (bloodAdd) > 12000 then
 			bloodAdd = 12000
 		end		
-		setElementData(source, prop, 100) --update stats
+		setElementData(source, prop, 100) --update stats (all food/drink brings you to 100% atm)
 		setElementData(source, "blood", bloodAdd)
 		triggerClientEvent(source,"hideInventoryManual",root)
 		setPedAnimation(source, "FOOD", "EAT_Burger",-1,false,false,false,false)
@@ -716,6 +703,7 @@ function rcsHandler(item,prop) --DONE(99%) FUTR: update to work with invMaster |
 end
 addEvent("onPlayerRequestChangingStats",true)
 addEventHandler("onPlayerRequestChangingStats", root, rcsHandler)
+
 function skinHandler(item) --DONE(99%) FUTR: update to work with invMaster | stays
 	local amt = itemCheck(source, item)
 	if amt then 
@@ -733,10 +721,11 @@ function skinHandler(item) --DONE(99%) FUTR: update to work with invMaster | sta
 end
 addEvent("onPlayerChangeSkin",true)
 addEventHandler("onPlayerChangeSkin", root, skinHandler)
+
 function refillHandler(item) --DONE(99%) FUTR: update to work with invMaster | stays
 	local amt = itemCheck(source, item)
 	if amt then 
-		local item2 = invMaster[27][3]
+		local item2 = invMaster[501][1] --water bottle 
 		local amt2 = getElementData(source, item2)
 		if (not amt2) then
 			amt2 = 0
@@ -748,6 +737,7 @@ function refillHandler(item) --DONE(99%) FUTR: update to work with invMaster | s
 end
 addEvent("onPlayerRefillWaterBottle",true)
 addEventHandler("onPlayerRefillWaterBottle", root, refillHandler)
+
 function tentHandler(item) --DONE(99%) FUTR: update to work with invMaster | goes
 	local amt = itemCheck(source, item)
 	if amt then 
@@ -758,6 +748,7 @@ function tentHandler(item) --DONE(99%) FUTR: update to work with invMaster | goe
 end
 addEvent("onPlayerPitchATent",true)
 addEventHandler("onPlayerPitchATent", root, tentHandler)
+
 function fenceHandler(item) --DONE(99%) FUTR: update to work with invMaster | goes
 	local amt = itemCheck(source, item)
 	if amt then 
@@ -768,6 +759,7 @@ function fenceHandler(item) --DONE(99%) FUTR: update to work with invMaster | go
 end
 addEvent("onPlayerBuildAWireFence",true)
 addEventHandler("onPlayerBuildAWireFence", root, fenceHandler)
+
 function flareHandler(item) --DONE(99%) FUTR: update to work with invMaster | goes
 	local amt = itemCheck(source, item)
 	if amt then 
@@ -778,6 +770,7 @@ function flareHandler(item) --DONE(99%) FUTR: update to work with invMaster | go
 end
 addEvent("onPlayerPlaceRoadflare",true)
 addEventHandler("onPlayerPlaceRoadflare", root, flareHandler)
+
 function fireHandler(item) --DONE(99%) FUTR: update to work with invMaster | goes
 	local amt = itemCheck(source, item) 
 	if amt then 
@@ -792,6 +785,7 @@ function fireHandler(item) --DONE(99%) FUTR: update to work with invMaster | goe
 end
 addEvent("onPlayerMakeAFire",true)
 addEventHandler("onPlayerMakeAFire", root, fireHandler)
+
 function medicHandler(item,target) --writeme(10%) | stays
 	local amt = itemCheck(source, item)
 	if amt then 
@@ -809,6 +803,7 @@ function medicHandler(item,target) --writeme(10%) | stays
 end
 addEvent("onPlayerUseMedicObject",true)
 addEventHandler("onPlayerUseMedicObject", root, medicHandler)
+
 function rearmHandler(item,slot) --testme(??%) FUTR: update to work with invMaster | stays | NEEDS BONE ATTACH
 	if itemCheck(source, item) then 
 		takeAllWeapons(source) 
@@ -843,6 +838,7 @@ function rearmHandler(item,slot) --testme(??%) FUTR: update to work with invMast
 end
 addEvent("onPlayerRearmWeapon",true)
 addEventHandler("onPlayerRearmWeapon", root, medicHandler)
+
 function killHandler(attacker,headshot,wpnName) --DONE(100%) | stays
 	if not attacker then
 		attacker = source
@@ -869,12 +865,14 @@ function loadMap(startedMap) --RELEASE: remove the train what the fuck are you d
 	outputServerLog("map loaded")
 end
 addEventHandler("onGamemodeMapStart", root, loadMap)
+
 function joinHandler()
 	if table.maxn(getElementsByType("player")) == 1 then --when the server has 0 people in it, all sim stops; this resets clock settings when someone joins
 		setMinuteDuration(15000)
 	end	
 end
 addEventHandler("onPlayerJoin", root, joinHandler)
+
 function quitHandler() 
 	local usrAcct = getPlayerAccount(source)
 	if isGuestAccount(usrAcct) then --they joined; they quit before logging in; RIP
@@ -887,6 +885,7 @@ function quitHandler()
 	logOut(source) --GOODBYE
 end
 addEventHandler("onPlayerQuit", root, quitHandler)
+
 function deathHandler(tot,atk,wpn,bp,bStealth) --this handles ALL DEATHS EVEN STEALTH KILLS NO MORE BUGS
 	local usrAcct,wpnID,spawn,bpart = 
 			getPlayerAccount(source),
@@ -900,6 +899,7 @@ function deathHandler(tot,atk,wpn,bp,bStealth) --this handles ALL DEATHS EVEN ST
 	setTimer(spawnPlr,7050,1,source) --arbitrary numbers
 end
 addEventHandler("onPlayerWasted", root, deathHandler)
+
 function exitHandler() --maybe fix this later
 	--kicking all players isnt a problem because it calls quithandler on all of them NOICE
 	local players = getElementsByType("player")
@@ -908,6 +908,7 @@ function exitHandler() --maybe fix this later
 	end
 end
 addEventHandler ("onResourceStop", resourceRoot, exitHandler)
+
 
 --TIMERS
 function handleTrafficLightsOutOfOrder() --i really like this thank you mtawiki
@@ -945,6 +946,7 @@ function checkTemperature() --TODO: ADD MORE WEATHERS
   end
 end
 setTimer(checkTemperature, 60000, 0)
+
 function checkTemperature2()
   for i,player in ipairs(getElementsByType("player")) do
     if getElementData(player, "auth") then
@@ -960,6 +962,7 @@ function checkTemperature2()
   end
 end
 setTimer(checkTemperature2, 10000, 0)
+
 function setHunger() --TODO: MAKE ME BETTER (how?)
   for i,player in ipairs(getElementsByType("player")) do
     if getElementData(player, "auth") then
@@ -969,6 +972,7 @@ function setHunger() --TODO: MAKE ME BETTER (how?)
   end
 end
 setTimer(setHunger, 61258, 0)
+
 function setThirsty() --ME TOO (how?)
   for i,player in ipairs(getElementsByType("player")) do
     if getElementData(player, "auth") then
@@ -978,6 +982,7 @@ function setThirsty() --ME TOO (how?)
   end
 end
 setTimer(setThirsty, 59379, 0)
+
 function checkThirsty()
   for i,player in ipairs(getElementsByType("player")) do
     if getElementData(player, "auth") then
@@ -990,6 +995,7 @@ function checkThirsty()
   end
 end
 setTimer(checkThirsty, 9892, 0)
+
 function checkHumanity()
   for i,player in ipairs(getElementsByType("player")) do
     if getElementData(player, "auth") and getElementData(player, "humanity") < 2500 then
@@ -1002,6 +1008,8 @@ function checkHumanity()
 end
 setTimer(checkHumanity, 65084, 0)
   --END
+  
+
   
 --[[debug stuff
 	--nothing for now 
