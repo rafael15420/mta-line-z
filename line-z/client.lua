@@ -13,7 +13,7 @@ uses these fine resources:
 
 --[[
 #---------------------------------------------------------------#
-----*			DayZ MTA Script client.lua					*----
+----*			 client.lua - logic and etc					*----
 ----* HACKED												*----
 ----* BY													*----
 ----* CHINESE		--TODO: keep at it				 		*----
@@ -22,6 +22,16 @@ uses these fine resources:
 ]]
 
 --VARIABLES
+local invMaster = {}
+function cInvMasterRecvHandler(invTab)
+	invMaster = invTab
+	local num = math.random(101,109)
+	outputDebugString("invmaster recieved: '"..tostring(invMaster[num][1]).."' does "..tostring(invMaster[num][3]).." damage and weighs "..tostring(invMaster[num][2]).."kg")
+end
+addEvent("cInvMasterRecv",true)
+addEventHandler("cInvMasterRecv",localPlayer,cInvMasterRecvHandler,false)
+
+
 local weaponAmmoTable = { --going into master
 	["Pistol Ammo"] = {
 		{"Pistol",22},
@@ -225,34 +235,32 @@ addEventHandler("checkVehicleInWaterClient",getRootElement(),checkVehicleInWater
 --HOOKS
 function playerGetDamageDayZ ( attacker, weapon, bodypart, loss ) --THIS IS A BIG ONE
 	cancelEvent()
-	damage = 100
-	headshot = false
-	if weapon == 37 then
+	local damage,headshot = 100,false
+	local bloodloss,bleedvalue = getElementData(localPlayer,"blood"),
+								 getElementData(localPlayer,"bleeding")
+	if weapon == 37 then --fire
 		return
 	end
-	if getElementData(attacker,"zombie") then
-		setElementData(localPlayer,"blood",getElementData(localPlayer,"blood")-math.random(100,600))
-		local number = math.random(1,7)
-		if number == 4 then
-			setElementData(localPlayer,"bleeding",getElementData(localPlayer,"bleeding") + math.floor(loss*10))
+	if attacker and getElementData(attacker,"zombie") then --zombies
+			bloodloss = bloodloss - math.random(100,600)
+			local number = math.random(1,7)
+			if number == 4 then
+				bleedvalue = bleedvalue + math.floor(loss*10)
+			end
 		end
-	end
-	if weapon == 49 then
+	if weapon == 49 then --cars
 		if loss > 30 then
 			setElementData(localPlayer,"brokenbone",true)
 			setControlState ("jump",true)
-			setElementData(localPlayer,"blood",getElementData(localPlayer,"blood")-math.floor(loss*10))
+			bloodloss = bloodloss-math.floor(loss*10)
 		end
-		setElementData(localPlayer,"blood",getElementData(localPlayer,"blood")-math.floor(loss*5))
-	elseif weapon == 63 or weapon == 19 then
-		setElementData(localPlayer,"blood",0)
-		if not getElementData(localPlayer,"isDead") then
-			triggerServerEvent("kilLDayZPlayer",localPlayer,attacker,headshot) --fix this (i dunno what to fix?)
-		end
-	elseif weapon and weapon > 1 and attacker and getElementType(attacker) == "player" then
+		bloodloss = bloodloss-math.floor(loss*5)
+	elseif weapon == 63 or weapon == 19 then --inside a car explosion / rocket direct hit
+		bloodloss = bloodloss - 12002		
+	elseif weapon and weapon > 1 and attacker and getElementType(attacker) == "player" then --players
 		local number = math.random(1,8)
 		if number >= 6 and number <= 8 then
-			setElementData(localPlayer,"bleeding",getElementData(localPlayer,"bleeding") + math.floor(loss*10))
+			bleedvalue = bleedvalue + math.floor(loss*10)
 		end
 		local number = math.random(1,7)
 		if number == 2 then
@@ -266,28 +274,34 @@ function playerGetDamageDayZ ( attacker, weapon, bodypart, loss ) --THIS IS A BI
 		if bodypart == 7 or bodypart == 8 then
 			setElementData(localPlayer,"brokenbone",true)
 		end
-		setElementData(localPlayer,"blood",getElementData(localPlayer,"blood")-math.random(damage*0.75,damage*1.25))
-		setElementData(attacker,"humanity",getElementData(attacker,"humanity")-math.random(40,200))
-		if getElementData(attacker,"humanity") < 0 then
+		bloodloss = bloodloss - math.random(damage*0.75,damage*1.25)
+		local humanityValue = getElementData(attacker,"humanity") - math.random(40,200)
+		if humanityValue < 0 then
 			setElementData(attacker,"bandit",true)
 		end
-	elseif weapon == 54 or weapon == 51 then
-			setElementData(localPlayer,"blood",getElementData(localPlayer,"blood")-math.random(100,1000))
-			setElementData(localPlayer,"bleeding",getElementData(localPlayer,"bleeding") + math.floor(loss*10))
-		local number = math.random(1,5)
+		setElementData(attacker,"humanity",humanityValue)
+	elseif weapon == 54 or weapon == 51 then --falls and explosions
+		bloodloss = bloodloss-math.random(100,1000)
+		if weapon == 51 then bleedvalue = bleedvalue + math.floor(loss*10) end 
 		if loss > 30 then
 			setElementData(localPlayer,"brokenbone",true)
 			setControlState ("jump",true)
+			bleedvalue = bleedvalue + math.floor(loss*10)
 		end
 		if loss >= 100 then
-			setElementData(localPlayer,"blood",getElementData(localPlayer,"blood")-12002)
+			bloodloss = bloodloss-12002
 		end
 		local number = math.random(1,11)
 		if number == 3 then
 			setElementData(localPlayer,"pain",true)
 		end
 	end
-	if getElementData(localPlayer,"blood") <= 0 then
+	
+	--SYNC UP
+	setElementData(localPlayer,"blood",bloodloss)
+	setElementData(localPlayer,"bleeding",bleedvalue)
+		
+	if bloodloss <= 0 then --DIE
 		if not getElementData(localPlayer,"isDead") then
 			triggerServerEvent("kilLDayZPlayer",localPlayer,attacker,headshot,getWeaponNameFromID (weapon))
 		end
@@ -323,13 +337,6 @@ addEventHandler ( "onClientPedDamage", getRootElement(), pedGetDamageDayZ )
 
 
 --BINDS
- --debugmon
-function showDebugMonitor ()
-	local visible = guiGetVisible(statsWindows)
-	guiSetVisible(statsWindows,not visible)
-end
-addCommandHandler("debugMon", showDebugMonitor, false) --remove this bind eventually
-bindKey("F5", "down", "debugMon", "")
  --goggles
 function playerZoom (key)
 	if key == "n" then

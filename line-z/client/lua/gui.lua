@@ -1,16 +1,23 @@
 ï»¿--[[ GUI.LUA		drline 2012
-
+	THIS IS ALL GUI STUFF
 	todo: fix / update
 
 --]]
 
 
 --VARIABLES
+ --share
+local screenWidth,screenHeight = guiGetScreenSize()
+ --dmon
 local statsLabel = {}
+ --icons
 local fading = 0
 local fading2 = "up"
-local screenWidth,screenHeight = guiGetScreenSize()
-local whiteWindow
+ --flash
+local whiteWindow,wwAlpha,wwControlState
+ --sboard
+local playerRankingTable = {}
+local yA = 0
 
 
 --FUNCTIONS
@@ -92,13 +99,19 @@ function refreshDebugMonitor()
 		local value2 = getElementData(getRootElement(),"zombiestotal") or 0
 		guiSetText(statsLabel["zombies"],"Zombies (Alive/Total): "..value.."/"..value2)
 		local value = getElementData(localPlayer,getElementData(statsLabel["temperature"],"identifikation"))
-		guiSetText(statsLabel["temperature"],"Temperature: "..math.round(value,2).."°C")
+		guiSetText(statsLabel["temperature"],"Temperature: "..math.round(value,2).." C")
 		local value = getElementData(localPlayer,getElementData(statsLabel["humanity"],"identifikation"))
 		guiSetText(statsLabel["humanity"],"Humanity: "..math.round(value,2))
 		guiSetText(statsLabel["name"],"Name: "..getPlayerName(localPlayer))
 	end			
 end
 setTimer(refreshDebugMonitor,2000,0)
+function showDebugMonitor ()
+	local visible = guiGetVisible(statsWindows)
+	guiSetVisible(statsWindows,not visible)
+end
+addCommandHandler("debugMon", showDebugMonitor, false) --remove this bind eventually
+bindKey("F5", "down", "debugMon", "")
 
  --icons
 function updateIcons () --MAGIC MAGIC MAGIC MAGIC MAGIC
@@ -283,10 +296,10 @@ function showDayZDeathScreen()
 	deadBackground = guiCreateStaticImage(0,0,1,1,"client/image/dead.jpg",true)
 	deathText = guiCreateLabel(0,0.8,1,0.2,"You died, \n you will respawn in 5 seconds.",true)
 	guiLabelSetHorizontalAlign (deathText,"center")
-	setTimer(guiSetVisible,5000,1,false)
-	setTimer(guiSetVisible,5000,1,false)
-	setTimer(destroyElement,5000,1,deathText)
-	setTimer(destroyElement,5000,1,deadBackground)
+	setTimer(guiSetVisible,5000,1,deathText,false)
+	setTimer(guiSetVisible,5000,1,deadBackground,false)	
+	setTimer(destroyElement,5010,1,deathText)
+	setTimer(destroyElement,5010,1,deadBackground)
 end
 
  --whiteflash
@@ -295,23 +308,23 @@ function createFlashWnd()
 	guiSetVisible(whiteWindow,false)
 	return whiteWindow
 end
-function showPlayerDamageScreen (visibly2,stateControle2)
+function showPlayerDamageScreen (wwAlpha2,wwControlState2)
 	guiSetVisible(whiteWindow,true)
-	local visibly = visibly2 or visibly	
-	stateControle = stateControle2 or stateControle
-	if visibly >= 10*0.075 and stateControle == "up" then
-		stateControle = "down"
+	wwAlpha = wwAlpha2 or wwAlpha	
+	wwControlState = wwControlState2 or wwControlState
+	if wwAlpha >= 10*0.075 and wwControlState == "up" then
+		wwControlState = "down"
 	end
-	if visibly < 0 then
+	if wwAlpha < 0 then
 		guiSetVisible(whiteWindow,false)
 		return
 	end
-	if stateControle == "up" then
-		visibly = visibly + 0.075
-	elseif stateControle == "down" then
-		visibly = visibly - 0.075
+	if wwControlState == "up" then
+		wwAlpha = wwAlpha + 0.075
+	elseif wwControlState == "down" then
+		wwAlpha = wwAlpha - 0.075
 	end
-	guiSetAlpha(whiteWindow,visibly)
+	guiSetAlpha(whiteWindow,wwAlpha)
 	setTimer(showPlayerDamageScreen,50,1)
 end
 function showWhiteScreen ( attacker, weapon, bodypart )
@@ -464,7 +477,6 @@ end
 function getRankingPlayer (place)
 return playerRankingTable[place]["Player"]
 end
-
 function getElementDataPosition(key,value)
 	if key and value then
 		local result = 1
@@ -479,7 +491,6 @@ function getElementDataPosition(key,value)
 		return result
 	end
 end
-
 function positionGetElementData(key, positions)
 	if key and positions then
 		local Position = {}
@@ -525,7 +536,6 @@ function positionGetElementData(key, positions)
 		return Position
 	end
 end
-
 function roundTime(value)
 	if value then
 		local theTime = getRealTime(value*60)
@@ -537,21 +547,10 @@ function roundTime(value)
 	return false
 end
 
-playerRankingTable = {}
-
-function checkTopPlayer()
-playerRankingTable = positionGetElementData("alivetime", #getElementsByType("player"))
-end
-checkTopPlayer()
-setTimer(checkTopPlayer,10000,0)
-
 function onQuitGame( reason )
     checkTopPlayer()
 end
 addEventHandler( "onClientPlayerQuit", getRootElement(), onQuitGame )
-
-yA = 0
-local screenWidth,screenHeight = guiGetScreenSize()
 function scoreBoard () --MORE MAGIC 
 if getKeyState( "tab" ) == false then return end
 if getElementData(localPlayer,"auth") then
@@ -650,6 +649,12 @@ end
 end	
 end
 addEventHandler ( "onClientRender", getRootElement(), scoreBoard )
+
+function checkTopPlayer()
+playerRankingTable = positionGetElementData("alivetime", #getElementsByType("player"))
+end
+checkTopPlayer()
+setTimer(checkTopPlayer,10000,0)
 function updatePlayTime()
 	if getElementData(localPlayer,"auth") then
 		local playtime = getElementData(localPlayer,"alivetime")
@@ -658,18 +663,23 @@ function updatePlayTime()
 end
 setTimer(updatePlayTime, 60000, 0)
 
+
+
 --INIT
 function guiInitHandler()
-	local err,wnd = nil,nil
-	
-	wnd = createDebugMonitor()
-	if (wnd == nil) then err = true end
-	wnd = createFlashWnd()
-	if (wnd == nil) then err = true end
-	
-	if err then
-		outputChatBox("GUI ERROR")
-		return
+	local wnd = createDebugMonitor()
+	if wnd then 
+		outputDebugString("debugMon created")
+	else
+		outputDebugString("debugMon fault")
 	end
+	
+	wnd = createFlashWnd()
+	if wnd then 
+		outputDebugString("whiteflash created")
+	else
+		outputDebugString("whiteflash fault")
+	end
+
 end
-addEventHandler("onClientResourceStart", resRoot, guiInitHandler)
+addEventHandler("onClientResourceStart", resourceRoot, guiInitHandler)
