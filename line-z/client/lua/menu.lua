@@ -3,7 +3,7 @@
 ----*			DayZ MTA Script menu_client.lua			*----
 ----* 
 ----* welp
-----*  todo: everything
+----*  todo: unify/standardize; maybe add graphics
 ----*														*----
 #---------------------------------------------------------------#
 ]]

@@ -3,8 +3,8 @@
 ----*			DayZ MTA Script inventory.lua			*----
 ----* 
 ----* i couldnt think of anything funny to say here
-----*  todo: everything
-----*														*----
+----*  todo: make me graphical and to spec
+----*				also iterators							*----
 #---------------------------------------------------------------#
 ]]
 
@@ -194,7 +194,7 @@ end
 addEvent("refreshLootManual",true)
 addEventHandler("refreshLootManual",localPlayer,refreshLootManual)
 
-function refreshInventory()
+function refreshInventory() 
 	if ( gridlistItems["inventory_colum"] ) then --If the column has been created, fill it with players
 		row1,column1 = guiGridListGetSelectedItem ( gridlistItems["inventory"] )
 		guiGridListClear(gridlistItems["inventory"])
