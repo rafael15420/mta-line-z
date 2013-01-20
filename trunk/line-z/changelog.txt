@@ -1,4 +1,10 @@
 ***********
+* v0.2 ****
+***********
+radios / chat
+bone attach stuff
+
+***********
 * v0.1 ****
 ***********
 rearm handler

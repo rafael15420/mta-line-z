@@ -10,17 +10,23 @@ uses these fine resources:
 	zday resource (maybe)
 	betterWeather resource
 
-TODO: 	finish item funcs (0%; still needs to be done [STEALSTEALSTEAL])
-		finish loot funcs (working on it)
-		write item spawning code (pull spawns from map data [generic spawns? or specific] [also:STEALSTEALSTEAL])
-		backpacks (more STEALING [laziness])
-			bone-attach (just have to integrate)
+TODO: 	inventory stuff:
+			finish item funcs (0%; still needs to be done [STEALSTEALSTEAL])
+			finish loot funcs (working on it)
+		item manipulation funcs (give item, take item etc)
+			test backpacks
+			test guns
+			test everything
+		gamemode admin menu (needs a gui)
+		
+		item spawning code (pull spawns from map data [generic spawns? or specific] [also:STEALSTEALSTEAL])
+		
 		zombies (lol @ this being the last thing)
 ]]--
 
---VARIABLES YO
-					--			      1,  2,   3,     4
-local invMaster = { --[itemID][n]= name, kg, dmg, extra
+
+--VARIABLES YO		--			      1,  2,   3,     4
+local invMaster = { --[itemID][n]= name, kg, dmg, extra 
 	--THE PLAN: both client and server have a master inventory list of all values for inventory items.
 	--that way simple standardized calls to this list can be made. item 37 will always be item 37 etc.
 	--NAMES AND VALUES WILL BE ABLE TO BE CHANGED WITHOUT FUCKING EVERYTHING UP. THIS IS GOOD. 
@@ -102,7 +108,6 @@ local invMaster = { --[itemID][n]= name, kg, dmg, extra
 	[708] = {"Binocular",1},
 	[709] = {"Radio Device",1},
 }
-
 local initInvTab = { --THIS IS GONNA GO (already in master)
 	["M4"] = 0,
 	["Sniper Rifle"] = 0,
@@ -236,14 +241,64 @@ local weaponAmmoTable = { --this will go into master aswell
 		{"Katana", 8}
 	}
 }
+local weaponIDtoObjectID = {
+	{30, 355}, 
+	{31, 356}, 
+	{25, 349}, 
+	{26, 350}, 
+	{27, 351}, 
+	{33, 357}, 
+	{34, 358}, 
+	{36, 360}, 
+	{35, 359}
+}
+--borrow
+local elementBackpack = {}
+local elementWeaponBack = {}
+local chatRadius = 15
+local chatEadioRadius = 250
 
 
 --FUNctions TODO: organize this
+---utility functions
 function createObjectEx(model,px,py,pz,rx,ry,rz,i,d,bIsLowLOD)
+	--this is a custom wrapper for createObject
+	--it allows you to choose interior and dimension
+	--why? because i wanted it dealwithit
 	local objTemp = createObject(model,px,py,pz,rx,ry,rz,bIsLowLOD)
-	setElementInterior(objTemp,i)
-	setElementDimension(objTemp,d)
+	if not objTemp then return false end
+	if i then setElementInterior(objTemp,i) end
+	if d then setElementDimension(objTemp,d) end
 	return objTemp
+end
+function getAttachOffsets(e1,e2) 
+	--thank you based glue resource
+	--this determines the attach offsets 
+	--for two objects that are touching
+	--yeah whatever its a horrible explaination
+	local px, py, pz = getElementPosition(e1)
+	local vx, vy, vz = getElementPosition(e2)
+	local sx = px - vx
+	local sy = py - vy
+	local sz = pz - vz		
+	local rotpX,rotpY,rotpZ = getElementRotation(e1)
+	local rotvX,rotvY,rotvZ = getElementRotation(e2)	
+	local t = math.rad(rotvX)
+	local p = math.rad(rotvY)
+	local f = math.rad(rotvZ)	
+	local ct = math.cos(t)
+	local st = math.sin(t)
+	local cp = math.cos(p)
+	local sp = math.sin(p)
+	local cf = math.cos(f)
+	local sf = math.sin(f)	
+	local offZ = ct*cp*sz + (sf*st*cp + cf*sp)*sx + (-cf*st*cp + sf*sp)*sy
+	local offX = -ct*sp*sz + (-sf*st*sp + cf*cp)*sx + (cf*st*sp + sf*cp)*sy
+	local offY = st*sz - sf*ct*sx + cf*ct*sy	
+	local rotX = rotpX - rotvX
+	local rotY = rotpY - rotvY
+	local rotZ = rotpZ - rotvZ	
+	return offX,offY,offZ,rotX,rotY,rotZ
 end
 function getWeaponAmmoType(weaponName, notOthers) --FUTR: update to work with invMaster
   if not notOthers then
@@ -285,32 +340,7 @@ function getWeaponAmmoType(weaponName, notOthers) --FUTR: update to work with in
   end
   return false
 end
-function getAttachOffsets(e1,e2) 
-	--thank you based glue resource
-	local px, py, pz = getElementPosition(e1)
-	local vx, vy, vz = getElementPosition(e2)
-	local sx = px - vx
-	local sy = py - vy
-	local sz = pz - vz		
-	local rotpX,rotpY,rotpZ = getElementRotation(e1)
-	local rotvX,rotvY,rotvZ = getElementRotation(e2)	
-	local t = math.rad(rotvX)
-	local p = math.rad(rotvY)
-	local f = math.rad(rotvZ)	
-	local ct = math.cos(t)
-	local st = math.sin(t)
-	local cp = math.cos(p)
-	local sp = math.sin(p)
-	local cf = math.cos(f)
-	local sf = math.sin(f)	
-	local offZ = ct*cp*sz + (sf*st*cp + cf*sp)*sx + (-cf*st*cp + sf*sp)*sy
-	local offX = -ct*sp*sz + (-sf*st*sp + cf*cp)*sx + (cf*st*sp + sf*cp)*sy
-	local offY = st*sz - sf*ct*sx + cf*ct*sy	
-	local rotX = rotpX - rotvX
-	local rotY = rotpY - rotvY
-	local rotZ = rotpZ - rotvZ	
-	return offX,offY,offZ,rotX,rotY,rotZ
-end
+--the rest
 function initVeh(eVeh) --TODO(80%): NEW PLANS:
 	--[[THESE ARE THE NEW PLANS
 		oh baby		
@@ -605,6 +635,36 @@ function addPlayerStats(player, data, value) --todo: figure me out
     setElementData(player, data, current + value)
   end
 end
+--borrow
+function getWeaponObjectID(weaponID)
+  for i,weaponData in ipairs(weaponIDtoObjectID) do
+    if weaponID == weaponData[1] then
+      return weaponData[2]
+    end
+  end
+end
+function removeAttachedOnDeath(ePlr)
+	if elementBackpack[ePlr] then
+		detachElementFromBone(elementBackpack[ePlr])
+		destroyElement(elementBackpack[ePlr])
+	end
+	if elementWeaponBack[ePlr] then
+		detachElementFromBone(elementWeaponBack[ePlr])
+		destroyElement(elementWeaponBack[ePlr])
+		elementWeaponBack[ePlr] = false
+	end
+end
+function backpackRemoveQuit(ePlr) 
+	if elementBackpack[ePlr] then
+		detachElementFromBone(elementBackpack[ePlr])
+		destroyElement(elementBackpack[ePlr])
+	end
+	if elementWeaponBack[ePlr] then
+		detachElementFromBone(elementWeaponBack[ePlr])
+		destroyElement(elementWeaponBack[ePlr])
+		elementWeaponBack[ePlr] = false
+	end
+end
 
 
 --NEW EVENTS | FUTR: combine thing stuff into thingHandler
@@ -661,7 +721,7 @@ function loginHandler(u,p,t) --DONE(99%) EVENTUALLY SS THE TRY CHECKS (far futur
 	setAccountData(usrAcct, "line-z.sav", 0) --PLAYER INVENTORY IS NOW UNSAFE; SERVER GOES DOWN THEYRE FUCKED (unless the db doesnt save)
 	triggerClientEvent(client,"cInvMasterRecv",client,invMaster) --send em invMaster
 	spawnPlr(client) --WELCOME TO THE WASTELAND
-	outputChatBox("Welcome to DIE", client) --PREPARE TO DIE (and stop wasting time making stupid useless comments)
+	outputChatBox("Welcome to DIE", client) --PREPARE TO DIE
 end
 addEvent("onLoginTry", true)
 addEventHandler("onLoginTry", root, loginHandler)
@@ -804,7 +864,7 @@ end
 addEvent("onPlayerUseMedicObject",true)
 addEventHandler("onPlayerUseMedicObject", root, medicHandler)
 
-function rearmHandler(item,slot) --testme(??%) FUTR: update to work with invMaster | stays | NEEDS BONE ATTACH
+function rearmHandler(item,slot) --testme(??%) FUTR: update to work with invMaster | stays 
 	if itemCheck(source, item) then 
 		takeAllWeapons(source) 
 		local ammoData, weapID = getWeaponAmmoType(item) 
@@ -850,9 +910,32 @@ function killHandler(attacker,headshot,wpnName) --DONE(100%) | stays
 		bpart = 9
 	end
 	killPed(source,attacker,wpnID,bpart)
+	removeAttachedOnDeath(source)
 end
 addEvent("kilLDayZPlayer",true)
 addEventHandler("kilLDayZPlayer", root, killHandler)
+
+
+--COMMANDS
+function playerRadioChat(playersource, cmd, ...)
+  if cmd == "radiochat" then
+    local msg2 = table.concat({...}, " ")
+    if getElementData(playersource, "Radio Device") or 0 <= 0 then
+      outputChatBox("You got no Radio Device.", playersource)
+      return 
+    end
+    local posX, posY, posZ = getElementPosition(playersource)
+    local chatSphere = createColSphere(posX, posY, posZ, chatEadioRadius)
+    local nearbyPlayers = getElementsWithinColShape(chatSphere, "player")
+    destroyElement(chatSphere)
+    for index,nearbyPlayer in ipairs(nearbyPlayers) do
+      if getElementData(nearbyPlayer, "Radio Device") > 0 then
+        outputChatBox("[RADIO DEVICE]" .. string.gsub(getPlayerName(playersource) .. " : " .. msg2, "#%x%x%x%x%x%x", ""), nearbyPlayer, 60, 200, 40, true)
+      end
+    end
+  end
+end
+addCommandHandler("radiochat", playerRadioChat)
 
 
 --HOOKS
@@ -879,6 +962,7 @@ function quitHandler()
 		outputServerLog("POO")
 		return
 	end
+	backpackRemoveQuit(source)
 	savePlrSpn(source)
 	savePlrInv(source)	
 	setAccountData(usrAcct, "line-z.sav", 1) --PLAYER INVENTORY IS NOW SAFE
@@ -886,7 +970,7 @@ function quitHandler()
 end
 addEventHandler("onPlayerQuit", root, quitHandler)
 
-function deathHandler(tot,atk,wpn,bp,bStealth) --this handles ALL DEATHS EVEN STEALTH KILLS NO MORE BUGS
+function deathHandler(tot,atk,wpn,bp,bStealth) 
 	local usrAcct,wpnID,spawn,bpart = 
 			getPlayerAccount(source),
 			0,
@@ -900,7 +984,7 @@ function deathHandler(tot,atk,wpn,bp,bStealth) --this handles ALL DEATHS EVEN ST
 end
 addEventHandler("onPlayerWasted", root, deathHandler)
 
-function exitHandler() --maybe fix this later
+function exitHandler() 
 	--kicking all players isnt a problem because it calls quithandler on all of them NOICE
 	local players = getElementsByType("player")
 	for k,v in ipairs(players) do
@@ -908,6 +992,22 @@ function exitHandler() --maybe fix this later
 	end
 end
 addEventHandler ("onResourceStop", resourceRoot, exitHandler)
+
+function sendMessageToNearbyPlayers(message, messageType)
+  cancelEvent()
+	if messageType == 1 then
+		return
+	elseif messageType == 0 then
+		local posX, posY, posZ = getElementPosition(source)
+		local chatSphere = createColSphere(posX, posY, posZ, chatRadius)
+		local nearbyPlayers = getElementsWithinColShape(chatSphere, "player")
+		destroyElement(chatSphere)
+		for index,nearbyPlayer in ipairs(nearbyPlayers) do
+			outputChatBox("[LOCAL]" .. string.gsub(getPlayerName(source) .. " : " .. message, "#%x%x%x%x%x%x", ""), nearbyPlayer, 60, 200, 40, true)
+		end
+	end
+end
+addEventHandler("onPlayerChat", getRootElement(), sendMessageToNearbyPlayers)
 
 
 --TIMERS
@@ -923,7 +1023,7 @@ function handleTrafficLightsOutOfOrder() --i really like this thank you mtawiki
     end
 end
 setTimer(handleTrafficLightsOutOfOrder,3000,0)
-  --BEGIN: ALTERED marwin code
+  --BEGIN: borrow
 function checkTemperature() --TODO: ADD MORE WEATHERS
   for i,player in ipairs(getElementsByType("player")) do
     if getElementData(player, "auth") then
@@ -1007,10 +1107,168 @@ function checkHumanity()
   end
 end
 setTimer(checkHumanity, 65084, 0)
+
+function checkBandit()
+	for i,player in ipairs(getElementsByType("player")) do --get all players
+		if getElementData(player, "auth") then --check if player is auth
+			local current = getElementData(player, "skin") --get current skin
+			if getElementData(player, "bandit") then --if they are a bandit
+				if current == 179 or current == 287 then --and arent the correct skin
+					setElementModel(player, 288) --skin them
+				elseif current == 73 then --but if theyre standard skin
+					setElementModel(player, 180) --make em a different bandit
+				end
+			else --if they are not a bandit
+				if getElementData(player, "humanity") == 5000 and (current == 73 or current == 179 or current == 287) then --check if they are a hero
+					setElementModel(player, 210) --and make them look the part
+				end --otherwise
+				setElementModel(player, current) --reset them back to their normal skin
+			end
+		end
+    end
+end
+setTimer(checkBandit, 20000, 0)
   --END
   
+---[[unsorted borrow begin
+function backPackBack(dataName, oldValue)
+    if getElementType(source) == "player" and dataName == "MAX_Slots" then
+    local newValue = getElementData(source, dataName)
+    if elementBackpack[source] then
+      detachElementFromBone(elementBackpack[source])
+      destroyElement(elementBackpack[source])
+      elementBackpack[source] = false
+    end
+    local x, y, z = getElementPosition(source)
+    local rx, ry, rz = getElementRotation(source)
+    if newValue == 16 then
+      elementBackpack[source] = createObject(3026, x, y, z)
+    elseif newValue == 28 then
+      elementBackpack[source] = createObject(1248, x, y, z)
+    elseif newValue == 36 then
+      elementBackpack[source] = createObject(1252, x, y, z)
+    elseif newValue == 10 then
+      return 
+    end
+    attachElementToBone(elementBackpack[source], source, 3, 0, -0.225, 0.05, 90, 0, 0)
+  end
+end
+function weaponDelete(dataName, oldValue)
+	if getElementType(source) == "player" then
+		local weapon1 = getElementData(source, "currentweapon_1")
+		local weapon2 = getElementData(source, "currentweapon_2")
+		local weapon3 = getElementData(source, "currentweapon_3")
+		if (dataName == weapon1 or dataName == weapon2 or dataName == weapon3) and getElementData(source, dataName) == 0 then
+			local ammoData, weapID = getWeaponAmmoType(dataName)
+			takeWeapon(source, weapID)
+		end
+		local weapon1 = getElementData(source, "currentweapon_1")
+		local weapon2 = getElementData(source, "currentweapon_2")
+		local weapon3 = getElementData(source, "currentweapon_3")
+		local ammoData1, weapID1 = getWeaponAmmoType(weapon1)
+		local ammoData2, weapID2 = getWeaponAmmoType(weapon2)
+		local ammoData3, weapID3 = getWeaponAmmoType(weapon3)
+		if dataName == ammoData1 then
+			local newammo = oldValue - getElementData(source, dataName)
+			if newammo == 1 then
+				return 
+			end
+			if getElementData(source, dataName) < oldValue then
+				takeWeapon(source, weapID1, newammo)
+			end
+			if elementWeaponBack[source] then
+				detachElementFromBone(elementWeaponBack[source])
+				destroyElement(elementWeaponBack[source])
+				elementWeaponBack[source] = false
+			end
+		else
+			if oldValue < getElementData(source, dataName) then
+				giveWeapon(source, weapID1, getElementData(source, dataName) - oldValue, true)
+			end
+		end
+		if dataName == ammoData2 then
+			local newammo = oldValue - getElementData(source, dataName)
+			if newammo == 1 then
+				return 
+			end
+			if getElementData(source, dataName) < oldValue then
+				takeWeapon(source, weapID2, newammo)
+			end
+		else
+			if oldValue < getElementData(source, dataName) then
+				giveWeapon(source, weapID2, getElementData(source, dataName) - oldValue, false)
+			end
+		end
+	end
+	if dataName == ammoData3 then
+		local newammo = oldValue - getElementData(source, dataName)
+		if newammo == 1 then
+			return 
+		end
+		if getElementData(source, dataName) < oldValue then
+			takeWeapon(source, weapID3, newammo)
+		end
+	else
+		if oldValue < getElementData(source, dataName) then
+			giveWeapon(source, weapID3, getElementData(source, dataName) - oldValue, false)
+		end
+	end
+end
+--addEventHandler("onElementDataChange", getRootElement(), backPackBack) --this is horrible
+--addEventHandler("onElementDataChange", getRootElement(), weaponDelete) --this is also horrible
 
-  
+function weaponSwitchBack(previousWeaponID, currentWeaponID)
+	local weapon1 = getElementData(source, "currentweapon_1")
+	if not weapon1 then
+		return 
+	end
+	local ammoData1, weapID1 = getWeaponAmmoType(weapon1)
+	local x, y, z = getElementPosition(source)
+	local rx, ry, rz = getElementRotation(source)
+	if previousWeaponID == weapID1 then
+		if elementWeaponBack[source] then
+			detachElementFromBone(elementWeaponBack[source])
+			destroyElement(elementWeaponBack[source])
+			elementWeaponBack[source] = false
+		end
+		elementWeaponBack[source] = createObject(getWeaponObjectID(weapID1), x, y, z)
+		setObjectScale(elementWeaponBack[source], 0.875)
+		if elementBackpack[source] then
+			attachElementToBone(elementWeaponBack[source], source, 3, 0.19, -0.31, -0.1, 0, 270, -90)
+		else
+			attachElementToBone(elementWeaponBack[source], source, 3, 0.19, -0.11, -0.1, 0, 270, 10)
+		end
+	elseif currentWeaponID == weapID1 then
+		detachElementFromBone(elementWeaponBack[source])
+		destroyElement(elementWeaponBack[source])
+		elementWeaponBack[source] = false
+	end
+end
+addEventHandler("onPlayerWeaponSwitch", getRootElement(), weaponSwitchBack)
+
+function removeBackWeaponOnDrop()
+	if elementWeaponBack[source] then
+		detachElementFromBone(elementWeaponBack[source])
+		destroyElement(elementWeaponBack[source])
+		elementWeaponBack[source] = false
+	end
+end
+addEvent("removeBackWeaponOnDrop", true)
+addEventHandler("removeBackWeaponOnDrop", getRootElement(), removeBackWeaponOnDrop)
+
+
+--[[
+function blockChatMessage(m, mt)
+  if mt == 1 then
+    cancelEvent()
+  end
+end
+--]]
+--addEventHandler("onPlayerChat", getRootElement(), blockChatMessage)
+
+--]]
+
+
 --[[debug stuff
 	--nothing for now 
 --]]

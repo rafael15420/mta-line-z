@@ -137,7 +137,6 @@
 	<!-- <info author="Churchill" type="script" name="BetterWeather" version="1.0.1" description="A more realistic weather system" /> -->
 		<script src="betterWeather/BetterWeather.lua" />  
 		
-		<!-- this block can be commented out if you plan to call this resource from another resource-->
 		<script src="betterWeather/BetterWeather_c.lua" type="client" />  
 		<script src="betterWeather/OptionalClientScript.lua" type="client" />  
 		<script src="betterWeather/OptionalServerScript.lua" type="server" />  
@@ -161,22 +160,20 @@
 		<file src="betterWeather/img/Night/5.png" raw="true" />
 		<file src="betterWeather/img/Night/6.png" raw="true" />
 		<file src="betterWeather/img/Night/7.png" raw="true" />
-		<!--end of optional code -->
-	
-		<export function="GetTodaysWeatherDescriptions" http="true" />
-		<export function="GetTodaysWeatherIDs" http="true" />
-		<export function="GetAllWeatherDescriptions" http="true" />
-		<export function="GetAllWeatherIDs" http="true" />
-		<export function="GetDayWeatherDescription" http="true" />
-		<export function="GetNightWeatherDescription" http="true" />
 	<!-- end betterweather -->
+	
 	
 	<!-- <info author="uPrell" name="glue"  version="1.0" type="script"/> -->
 		<script src="glue/glue.lua" type="client" />
 		<script src="glue/glueS.lua" type="server" />
 	<!-- end glue -->
 	
-	<!--  -->
 	
+	<!-- <info author="CrystalMV" version="1.2.0" name="Bone attachments" description="Attach elements to bones of peds and players" type="script" /> -->
+		<script src="bone_attach.lua" />
+		<script src="bone_attach_c.lua" type="client" />
+		<script src="attach_func.lua" />
+		<script src="attach_func.lua" type="client" />
+		<script src="bone_pos_rot.lua" type="client" />
 	<!-- end boneattach -->
 </meta>

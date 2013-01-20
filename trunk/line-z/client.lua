@@ -368,7 +368,7 @@ bindKey("i", "down", "playerZoom", "i")
 bindKey("z", "down", "chatbox", "radiochat" ) --TODO: handle radio chat on server
 
 
---TIMERS
+--TIMERS --alot of these are stupid i mean really stupid upgrade to event based programming please
 function playerStatsCS()
 	if getElementData(localPlayer,"auth") then
 		toggleControl ("radar",false)
@@ -390,7 +390,7 @@ function playerStatsCS()
 		end
 	end
 end
-setTimer(playerStatsCS,1000,0) --we do this EVERY SECOND (why)
+setTimer(playerStatsCS,1000,0) --we do this EVERY SECOND (why) TODO: find out why
 function zombieSpawning()
 	local x, y, z = getElementPosition(localPlayer)
 	local material,hitX, hitY, hitZ = isObjectAroundPlayer2 ( localPlayer, 30, 3 )
@@ -408,6 +408,7 @@ end
 setTimer(stopZombieSound,5000,0)
 function checkStats()
 if getElementData(localPlayer,"auth") then
+	--triggerServerEvent("checkBleed",localPlayer) --this is the future
 	local bleed = getElementData(localPlayer,"bleeding")
 	local blood = getElementData(localPlayer,"blood")
 	if bleed > 20 then
@@ -521,7 +522,7 @@ function setVolume() --PLEASE FIX
 	if value > 100 then
 		value = 100
 	end
-	setElementData(localPlayer,"volume",value) --setElementData IS SYNCED FUCKING FUCK DO NOT DO THIS EVERY 100ms
+	setElementData(localPlayer,"volume",value) --setElementData IS SYNCED FUCKING FUCK DO NOT DO THIS EVERY 100ms --but the zombies need it
 end
 setTimer(setVolume,100,0)
 function setVisibility() --PLEASE FIX
@@ -550,7 +551,7 @@ function setVisibility() --PLEASE FIX
 	if isPedInVehicle (localPlayer) then
 		value = 100
 	end	
-	setElementData(localPlayer,"visibly",value) --setElementData IS SYNCED FUCKING FUCK DO NOT DO THIS EVERY 100ms
+	setElementData(localPlayer,"visibly",value) --setElementData IS SYNCED FUCKING FUCK DO NOT DO THIS EVERY 100ms --but the zombies need it
 end
 setTimer(setVisibility,100,0) 
 function debugJump2() --why2
