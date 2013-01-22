@@ -145,7 +145,7 @@ local initInvTab = { --THIS IS GONNA GO (already in master)
 	["Cooked Meat"] = 0,
 	["Wood"] = 1,
 	["Bandage"] = 0,
-	["Roadflare"] = 5,
+	["Roadflare"] = 0,
 	["Empty Patrol Canister"] = 0,
 	["Full Patrol Canister"] = 1,
 	["Medic Kit"] = 0,
@@ -174,8 +174,8 @@ local initInvTab = { --THIS IS GONNA GO (already in master)
 	["Lighter"] = 1,
 	["Watch"] = 1,
 	["GPS"] = 1,
-	["Toolbox"] = 0,
-	["Binocular"] = 1,
+	["Toolbox"] = 1,
+	["Binocular"] = 0,
 	["Radio Device"] = 1,
 }
 local initPlrTab = { --extra settings for players --going into master
@@ -647,8 +647,7 @@ function giveItemOld(ePlr,item,value)
 	setElementData(ePlr,item,getElementData(ePlr,item)+value) --ok we're good, give em the item
 	return "gave "..value.." of '"..item.."' to '"..getPlayerName(ePlr).."' ("..tostring(ePlr)..")"
 end
-function createVehOld()
-end
+
 
 function giveItemNew()
 end
@@ -963,11 +962,56 @@ function giveItemCommand(pSource, cmd, ePlr, item, value)
 	--keep me just incase, i feel insecure about lua being amazing
 end
 
-addCommandHandler("giveitem", function(pSource,_,plrName,item,value) outputChatBox("giveitem "..giveItemOld(getPlayerFromName(plrName),item,value), pSource, 200, 60, 40) end, false) --items with spaces in their name are fucked i guess RIB
+addCommandHandler("giveitem", function(pSource,_,plrName,item,value) outputChatBox("giveitem "..giveItemOld(getPlayerFromName(plrName),item,value), pSource, 200, 60, 40) end, true) --items with spaces in their name are fucked i guess RIB
 --addCommandHandler("spawnveh", spawnVehCommand,true)
 
 
 --HOOKS
+local function initHandler()
+	local thisResource = getThisResource()
+	if hasObjectPermissionTo(thisResource,"function.aclCreate") and 
+	   hasObjectPermissionTo(thisResource,"function.aclSetRight") and
+	   hasObjectPermissionTo(thisResource,"function.aclGroupAddObject") and
+	   hasObjectPermissionTo(thisResource,"function.aclGroupAddACL") and
+	   hasObjectPermissionTo(thisResource,"function.aclGroupRemoveObject") then
+		if aclGet("line-z") and aclGetGroup("line-z admin") then
+			outputDebugString("***acls loaded***")
+			return true
+		else
+			outputDebugString("***creating acls***")
+			local aclName, aclGroup = aclCreate("line-z"), aclCreateGroup("line-z admin")
+			aclGroupAddACL(aclGroup, aclName)
+			aclSetRight(aclName, "general.adminpanel", false)
+			aclSetRight(aclName, "resource.line-z.adminpanel", true)
+			aclSetRight(aclName, "command.giveitem", true)
+			aclName = aclGet("Moderator")
+			if not aclName then outputDebugString("no general moderator acl") else
+				aclGroupAddACL(aclGroup, aclName)
+			end
+			aclName = aclGet("SuperModerator")
+			if not aclName then outputDebugString("no general supermoderator acl") else
+				aclGroupAddACL(aclGroup, aclName)
+			end
+			aclName = aclGet("Admin")
+			if not aclName then outputDebugString("no general admin acl") else
+				aclGroupAddACL(aclGroup, aclName)
+			end
+			aclName = aclGet("RPC")
+			if not aclName then outputDebugString("no general rpc acl") else
+				aclGroupAddACL(aclGroup, aclName)
+			end
+			outputDebugString("***acls created***")
+			aclSave()
+			changeGamemode("line-z")
+		end
+	else
+		outputDebugString("error: resource needs console level access in ACL to initialize")
+		outputDebugString("add '<object name=\"resource.line-z\"></object>' to your acl.xml under 'console'")
+		cancelEvent()
+	end
+end
+addEventHandler("onResourceStart", resourceRoot, initHandler)
+
 function loadMap(startedMap) --RELEASE: remove the train what the fuck are you doing stop getting distracted
 	mapRoot = getResourceRootElement(startedMap)
 	initAllVehicles()
