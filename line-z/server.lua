@@ -635,6 +635,27 @@ function addPlayerStats(player, data, value) --todo: figure me out
     setElementData(player, data, current + value)
   end
 end
+--debug/admin funcs
+function giveItemOld(ePlr,item,value) 
+	if not ePlr then return "failure: no player" end--begin insanity
+	if not item then return "failure: no item" end
+	local test = false
+	for k,_ in pairs(initInvTab) do if k == item then test = true; break end end --this might break things GET IT (no really fix this if it bugs out)
+	if not test then return "failure: invalid item '"..tostring(item).."'" end
+	if (not value) or (type(value) ~= "number") then value = 1 end 
+	value = math.floor(math.abs(value))	--no fractions, no subtractions
+	setElementData(ePlr,item,getElementData(ePlr,item)+value) --ok we're good, give em the item
+	return "gave "..value.." of '"..item.."' to '"..getPlayerName(ePlr).."' ("..tostring(ePlr)..")"
+end
+function createVehOld()
+end
+
+function giveItemNew()
+end
+function createVehNew()
+end
+
+
 --borrow
 function getWeaponObjectID(weaponID)
   for i,weaponData in ipairs(weaponIDtoObjectID) do
@@ -775,6 +796,7 @@ function skinHandler(item) --DONE(99%) FUTR: update to work with invMaster | sta
 		end
 		triggerClientEvent(source,"hideInventoryManual",root)
 		setElementModel(source, newID)
+		setElementData(source, "skin", newID)
 		setElementData(source, item, amt-1)
 		setElementData(source, oldName, amt2+1)
 	end
@@ -918,7 +940,7 @@ addEventHandler("kilLDayZPlayer", root, killHandler)
 
 --COMMANDS
 function playerRadioChat(playersource, cmd, ...)
-  if cmd == "radiochat" then
+  if cmd == "radiochat" then --superfluous
     local msg2 = table.concat({...}, " ")
     if getElementData(playersource, "Radio Device") or 0 <= 0 then
       outputChatBox("You got no Radio Device.", playersource)
@@ -936,6 +958,13 @@ function playerRadioChat(playersource, cmd, ...)
   end
 end
 addCommandHandler("radiochat", playerRadioChat)
+  --debug/admin stuff
+function giveItemCommand(pSource, cmd, ePlr, item, value)
+	--keep me just incase, i feel insecure about lua being amazing
+end
+
+addCommandHandler("giveitem", function(pSource,_,plrName,item,value) outputChatBox("giveitem "..giveItemOld(getPlayerFromName(plrName),item,value), pSource, 200, 60, 40) end, false) --items with spaces in their name are fucked i guess RIB
+--addCommandHandler("spawnveh", spawnVehCommand,true)
 
 
 --HOOKS
