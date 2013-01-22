@@ -480,7 +480,7 @@ local current_SLOTS = 0
 end
 
 vehicleAddonsInfo = { --this is a table of { vehicle Model ID, # of tires, # of engines }
---MAYBE: centralized table on server, clients download table info on join (prob. not)
+--MAYBE: centralized table on server, clients download table info on join (prob. not) --did it lol
 --WHY: is this here?
 {422,4,1}, --Bobcat
 {470,4,1}, --Patriot

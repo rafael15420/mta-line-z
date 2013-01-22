@@ -464,7 +464,7 @@ if ( keyState == "down" ) then
 	end
 end
 bindKey ( "mouse3", "down", onPlayerPressMiddleMouse )
-bindKey ( "-", "down", onPlayerPressMiddleMouse )
+
 
 function getMenuMarkedItem() 
 	for i,guiItem in ipairs(spalteGuiText) do
@@ -475,12 +475,12 @@ function getMenuMarkedItem()
 end
 
 
-function playerPressedKey(button, press)
+function playerPressedKey(button, press) --what the hell is this
     if (press) then
 		if button == "w" or button == "a" or button == "s" or button == "d" then
 			local anim,anim2 = getPedAnimation (localPlayer)
 			if anim and anim == "SCRATCHING" and anim2 == "sclng_r" then
-				triggerServerEvent("onClientMovesWhileAnimation",localPlayer)
+				triggerServerEvent("onClientMovesWhileAnimation",localPlayer) --to my knowledge this is never triggered who knows maybe this is ghetto hack protection
 			end	
 		end
     end
