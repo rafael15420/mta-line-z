@@ -5,16 +5,13 @@
 --]]
 
 --vars
-local loginWnd,loginBtn,loginLab,loginEdt,loginTry,root,resRoot =
-																  {},
-																  {},
-																  {},
-																  {},
-																  0,
-																  getRootElement(),
-																  getResourceRootElement(getThisResource())
 local usrName,confFile
-
+local loginWnd,loginBtn,loginLab,loginEdt,loginTry =
+													 {},
+													 {},
+													 {},
+													 {},
+													 0
 --funcs
  --util
 function centerWindow(center_window)
@@ -25,11 +22,11 @@ function centerWindow(center_window)
 end
  --login gui
 function createLoginWindow()
-	confFile = xmlLoadFile("usr.xml")
+	confFile = xmlLoadFile("@usr.xml")
 	if (confFile) then
 		usrName = xmlNodeGetAttribute(confFile,"name")
 	else
-		confFile = xmlCreateFile("usr.xml","user")
+		confFile = xmlCreateFile("@usr.xml","user")
 		xmlNodeSetAttribute(confFile,"name","")
 		usrName = getPlayerName(localPlayer)
 	end
@@ -97,4 +94,4 @@ function loginInitHandler()
 		showLogin(true)
 	end
 end
-addEventHandler("onClientResourceStart", resRoot, loginInitHandler)
+addEventHandler("onClientResourceStart", resourceRoot, loginInitHandler)
