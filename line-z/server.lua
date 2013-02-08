@@ -10,7 +10,9 @@ uses these fine resources:
 	zday resource (maybe)
 	betterWeather resource
 
-TODO: 	inventory stuff:
+TODO: 	/!\ NEW SYSTEM /!\ implemented(ish)
+		remove refrences to invMaster
+		inventory stuff:
 			finish item funcs (0%; still needs to be done [STEALSTEALSTEAL])
 			finish loot funcs (working on it)
 		item manipulation funcs (give item, take item etc)
@@ -25,90 +27,342 @@ TODO: 	inventory stuff:
 ]]--
 
 
---VARIABLES YO		--			      1,  2,   3,     4
-local invMaster = { --[itemID][n]= name, kg, dmg, extra 
-	--THE PLAN: both client and server have a master inventory list of all values for inventory items.
-	--that way simple standardized calls to this list can be made. item 37 will always be item 37 etc.
-	--NAMES AND VALUES WILL BE ABLE TO BE CHANGED WITHOUT FUCKING EVERYTHING UP. THIS IS GOOD. 
-	--client downloads the master at join
-		
-	--prim weps
-	[101] = {"M4",3,6722,31}, 
-	[102] = {"Sniper Rifle",3,7522,34},
-	[103] = {"Shotgun",3,2024,25},
-	[104] = {"SPAZ-12 Combat Shotgun",3,4582,27},
-	[105] = {"Sawn-Off Shotgun",3,2894,26},
-	[106] = {"AK-47",3,3555,30},
-	[107] = {"Heat-Seeking RPG",5,37552,36},
-	[108] = {"Rocket Launcher",5,37552,35},
-	[109] = {"Country Rifle",3,6722,33},
-	--sec weps	
-	[201] = {"Pistol",2,889,22},
-	[202] = {"Silenced Pistol",2,889,23},
-	[203] = {"Uzi",2,889,28},
-	[204] = {"TEC-9",2,889,32},
-	[205] = {"MP5",3,1196,29},
-	[206] = {"Desert Eagle",2,2489,24},
-	[207] = {"Knife",1,1500,4},
-	[208] = {"Katana",2,2100,8},
-	--spec	
-	[301] = {"Parachute",1,0,46},
-	[302] = {"Tear Gas",1,0,17},
-	[303] = {"Grenade",1,18000,16},	
-	--ammo
-	[401] = {"Rocket Ammo",2},
-	[402] = {"Sniper Ammo",0.1},
-	[403] = {"Smg Ammo",0.025},
-	[404] = {"Assault Ammo",0.035},
-	[405] = {"Pistol Ammo",0.085},
-	[406] = {"Shotgun Ammo",0.067},
-	--food
-	[501] = {"Water Bottle",1,50},
-	[502] = {"Pasta Can",1,200},
-	[503] = {"Beans Can",1,200},
-	[504] = {"Burger",1,300},
-	[505] = {"Pizza",1,500},
-	[506] = {"Soda Bottle",1,100},
-	[507] = {"Milk",1,250},
-	[508] = {"Cooked Meat",1,800},
-	--misc
-	[601] = {"Wood",2},
-	[602] = {"Bandage",1},
-	[603] = {"Roadflare",1},
-	[604] = {"Empty Patrol Canister",2},
-	[605] = {"Full Patrol Canister",2},
-	[606] = {"Medic Kit",2},
-	[607] = {"Heat Pack",1},
-	[608] = {"Painkiller",1},
-	[609] = {"Morphine",1},
-	[610] = {"Blood Bag",1},
-	[611] = {"Wire Fence",1},
-	[612] = {"Raw Meat",1},
-	[613] = {"Tire",2},
-	[614] = {"Engine",5},
-	[615] = {"Tent",3},
-	[616] = {"Army Skin",1},
-	[617] = {"Civilian Skin",1},
-	[618] = {"Standart Skin",1},
-	[619] = {"Sniper Skin",1},
-	[620] = {"Empty Bottle",1},
-	[621] = {"Tin Can",1},
-	[622] = {"Scruffy Burgers",1},
-	[623] = {"Alice Backpack",1},
-	[624] = {"Small Backpack",1},
-	[625] = {"Coyote Backpack",1},
-	--tools
-	[701] = {"Night Vision Goggles",1},
-	[702] = {"Infrared Goggles",1},
-	[703] = {"Map",1},
-	[704] = {"Lighter",1},
-	[705] = {"Watch",1},
-	[706] = {"GPS",1},
-	[707] = {"Toolbox",1},
-	[708] = {"Binocular",1},
-	[709] = {"Radio Device",1},
+--VARIABLES YO		
+local invDefaults = {
+	[1] = { name = "Primary Equipment",
+		[1] = { name = "M4",
+			weight = 3,
+			dmg = 6722,
+			model = 31,
+			worldModel = 356,
+			ammo = 4 },
+		[2] = { name = "Sniper Rifle",
+			weight = 3,
+			dmg = 6722,
+			model = 34,
+			worldModel = 358,
+			ammo = 2 },
+		[3] = { name = "Shotgun",
+			weight = 3,
+			dmg = 6722,
+			model = 25,
+			worldModel = 349,
+			ammo = 6 },
+		[4] = { name = "SPAZ-12 Combat Shotgun",
+			weight = 3,
+			dmg = 6722,
+			model = 27,
+			worldModel = 351,
+			ammo = 6 },
+		[5] = { name = "Sawn-Off Shotgun",
+			weight = 3,
+			dmg = 6722,
+			model = 26,
+			worldModel = 350,
+			ammo = 6 },
+		[6] = { name = "AK-47",
+			weight = 3,
+			dmg = 6722,
+			model = 30,
+			worldModel = 355,
+			ammo = 4 },
+		[7] = { name = "Heat-Seeking RPG",
+			weight = 5,
+			dmg = 6722,
+			model = 36,
+			worldModel = 360,
+			ammo = 1 },
+		[8] = { name = "Rocket Launcher",
+			weight = 5,
+			dmg = 6722,
+			model = 35,
+			worldModel = 359,
+			ammo = 1 },
+		[9] = { name = "Country Rifle",
+			weight = 3,
+			dmg = 6722,
+			model = 33,
+			worldModel = 357,
+			ammo = 2 },
+	},
+	[2] = { name = "Secondary Equipment",
+		[1] = { name = "Pistol",
+			weight = 2,
+			dmg = 889,
+			model = 22,
+			worldModel = 346,
+			ammo = 5 },
+		[2] = { name = "Silenced Pistol",
+			weight = 2,
+			dmg = 889,
+			model = 23,
+			worldModel = 347,
+			ammo = 5 },
+		[3] = { name = "Uzi",
+			weight = 2,
+			dmg = 889,
+			model = 28,
+			worldModel = 352,
+			ammo = 3 },
+		[4] = { name = "TEC-9",
+			weight = 2,
+			dmg = 889,
+			model = 32,
+			worldModel = 372,
+			ammo = 3 },
+		[5] = { name = "MP5",
+			weight = 3,
+			dmg = 1196,
+			model = 29,
+			worldModel = 353,
+			ammo = 3 },
+		[6] = { name = "Desert Eagle",
+			weight = 2,
+			dmg = 2489,
+			model = 24,
+			worldModel = 348,
+			ammo = 5 },
+		[7] = { name = "Knife",
+			weight = 1,
+			dmg = 1500,
+			model = 4,
+			worldModel = 335 },
+		[8] = { name = "Katana",
+			weight = 2,
+			dmg = 2100,
+			model = 8,
+			worldModel = 339 },
+	},
+	[3] = { name = "Special Equipment",
+		[1] = { name = "Parachute",
+			weight = 1,
+			model = 46,
+			worldModel = 342 },
+		[2] = { name = "Tear Gas",
+			weight = 1,
+			model = 17,
+			worldModel = 17 },
+		[3] = { name = "Grenade",
+			weight = 1,
+			dmg = 18000,
+			model = 16,
+			worldModel = 342 },
+	},
+	[4] = { name = "Ammunition",
+		[1] = { name = "Rocket Ammo",
+			weight = 2,
+			worldModel = 3082 },
+		[2] = { name = "Sniper Ammo",
+			weight = 0.1,
+			worldModel = 2358 },
+		[3] = { name = "Smg Ammo",
+			weight = 0.025,
+			worldModel = 2041 },
+		[4] = { name = "Assault Ammo",
+			weight = 0.035,
+			worldModel = 1271 },
+		[5] = { name = "Pistol Ammo",
+			weight = 0.085,
+			worldModel = 3013 },
+		[6] = { name = "Shotgun Ammo",
+			weight = 0.067,
+			worldModel = 2358 },
+	},
+	[5] = { name = "Food and Drink",
+		[1] = { name = "Water Bottle",
+			weight = 1,
+			modValue = 50,
+			worldModel = 2683 },
+		[2] = { name = "Pasta Can",
+			weight = 1,
+			modValue = 200,
+			worldModel = 2770 },
+		[3] = { name = "Beans Can",
+			weight = 1,
+			modValue = 200,
+			worldModel = 2601 },
+		[4] = { name = "Burger",
+			weight = 1,
+			modValue = 300,
+			worldModel = 2768 },
+		[5] = { name = "Pizza",
+			weight = 1,
+			modValue = 500,
+			worldModel = 1582 },
+		[6] = { name = "Soda Bottle",
+			weight = 1,
+			modValue = 100,
+			worldModel = 2647 },
+		[7] = { name = "Milk",
+			weight = 1,
+			modValue = 250,
+			worldModel = 2856 },
+		[8] = { name = "Cooked Meat",
+			weight = 1,
+			modValue = 800,
+			worldModel = 2806 },
+	},
+	[6] = { name = "Healing Items",
+		[1] = { name = "Bandage",
+			weight = 1,
+			worldModel = 1578 },
+		[2] = { name = "Medic Kit",
+			weight = 2,
+			worldModel = 2891 },
+		[3] = { name = "Heat Pack",
+			weight = 1,
+			worldModel = 1576 },
+		[4] = { name = "Painkiller",
+			weight = 1,
+			worldModel = 2709 },
+		[5] = { name = "Morphine",
+			weight = 1,
+			worldModel = 1579 },
+		[6] = { name = "Blood Bag",
+			weight = 1,
+			worldModel = 1580 },
+	},
+	[7] = { name = "Skins",
+		[1] = { name = "Army Skin",
+			weight = 1,
+			model = 287,
+			worldModel = 1247,
+			banditModel = 288 },
+		[2] = { name = "Civilian Skin",
+			weight = 1,
+			model = 179,
+			worldModel = 1241,
+			banditModel = 180 },
+		[3] = { name = "Standard Skin",
+			weight = 1,
+			model = 73,
+			worldModel = 1577,
+			banditModel = 288 },
+		[4] = { name = "Sniper Skin",
+			weight = 1,
+			model = 285,
+			worldModel = 1213 },
+	},
+	[8] = { name = "Backpack",
+		[1] = { name = "Alice Backpack",
+			weight = 1,
+			worldModel = 1248 },
+		[2] = { name = "Small Backpack",
+			weight = 1,
+			worldModel = 3026 },
+		[3] = { name = "Coyote Backpack",
+			weight = 1,
+			worldModel = 1252 },
+	},
+	[9] = { name = "Deployables",
+		[1] = { name = "Roadflare",
+			weight = 1,
+			worldModel = 324 },
+		[2] = { name = "Wire Fence",
+			weight = 1,
+			worldModel = 933 },
+		[3] = { name = "Tent",
+			weight = 3,
+			worldModel = 1279 },
+	},
+	[10] = { name = "Resources",
+		[1] = { name = "Wood",
+			weight = 2,
+			worldModel = 1463 },
+		[2] = { name = "Raw Meat",
+			weight = 1,
+			worldModel = 2804 },
+		[3] = { name = "Empty Bottle",
+			weight = 1,
+			worldModel = 2683 },
+		[4] = { name = "Tin Can",
+			weight = 1,
+			worldModel = 2673 },
+		[5] = { name = "Scruffy Burgers",
+			weight = 1,
+			worldModel = 2675 },
+	},
+	[11] = { name = "Parts",
+		[1] = { name = "Tire",
+			weight = 2,
+			worldModel = 1073 },
+		[2] = { name = "Engine",
+			weight = 5,
+			worldModel = 929 },
+		[3] = { name = "Empty Petrol Canister",
+			weight = 2,
+			worldModel = 1650 },
+		[4] = { name = "Full Petrol Canister",
+			weight = 2,
+			worldModel = 1650 },
+	},
+	[12] = { name = "Tools",
+		[1] = { name = "Night Vision Goggles",
+			weight = 1,
+			worldModel = 368 },
+		[2] = { name = "Infrared Goggles",
+			weight = 1,
+			worldModel = 369 },
+		[3] = { name = "Map",
+			weight = 1,
+			worldModel = 1277 },
+		[4] = { name = "Lighter",
+			weight = 1,
+			worldModel = 328 },
+		[5] = { name = "Watch",
+			weight = 1,
+			worldModel = 2710 },
+		[6] = { name = "GPS",
+			weight = 1,
+			worldModel = 2976 },
+		[7] = { name = "Toolbox",
+			weight = 1,
+			worldModel = 2969 },
+		[8] = { name = "Binocular",
+			weight = 1,
+			worldModel = nil },
+		[9] = { name = "Radio Device",
+			weight = 1,
+			worldModel = 330 },
+	},
+	[13] = { name = "Status Variables", --some are OLD
+		volume = 0,
+		visibly = 0,
+		brokenbone = false,
+		humanity = 2500,
+		temperature = 37.7,
+		thirst = 100,
+		blood = 12000,
+		food = 100,
+		bleeding = 0,
+		zombieskilled = 0,
+		headshots = 0,
+		murders = 0,
+		banditskilled = 0,
+		zombies = 0,
+		MAX_Slots = 10,
+		alivetime = 0,
+		loot = false,
+		isDead = false,
+		pain = false,
+		skin = 73
+	},
 }
-local initInvTab = { --THIS IS GONNA GO (already in master)
+
+local invMaster = { }
+
+local writeInvXML = function()
+
+end
+
+--[[local plrTab = { --this is what the player table should look like completely initialized + having collected some shit
+
+} 
+--]]
+
+
+--EVERYTHING GOES
+local initInvTabOLD = { --in master
 	["M4"] = 0,
 	["Sniper Rifle"] = 0,
 	["Shotgun"] = 0,
@@ -178,7 +432,7 @@ local initInvTab = { --THIS IS GONNA GO (already in master)
 	["Binocular"] = 0,
 	["Radio Device"] = 1,
 }
-local initPlrTab = { --extra settings for players --going into master
+local initPlrTabOLD = { --extra settings for players --in master
 	["volume"] = 0,
 	["visibly"] = 0,
 	["brokenbone"] = false,
@@ -197,15 +451,16 @@ local initPlrTab = { --extra settings for players --going into master
 	["alivetime"] = 0,
 	["loot"] = false,
 	["isDead"] = false,
-	["pain"] = false
+	["pain"] = false,
+	["skin"] = 73
 }
-local skinTable = { --skinTable[itemName][#] = { skinID, banditskinID } --going into master
+local skinTableOLD = { --skinTableOLD[itemName][#] = { skinID, banditskinID } --in master
 	["Army Skin"] = {287,288},
 	["Civilian Skin"] = {179,180},
 	["Standart Skin"] = {73,288},
 	["Sniper Skin"] = {285,285}
 }
-local weaponAmmoTable = { --this will go into master aswell
+local weaponAmmoTableOLD = { --in master
 	["Pistol Ammo"] = {
 		{"Pistol", 22}, 
 		{"Silenced Pistol", 23}, 
@@ -241,7 +496,7 @@ local weaponAmmoTable = { --this will go into master aswell
 		{"Katana", 8}
 	}
 }
-local weaponIDtoObjectID = {
+local weaponIDtoObjectIDOLD = { --in master
 	{30, 355}, 
 	{31, 356}, 
 	{25, 349}, 
@@ -252,6 +507,7 @@ local weaponIDtoObjectID = {
 	{36, 360}, 
 	{35, 359}
 }
+--END EVERYTHING GOES
 --borrow
 local elementBackpack = {}
 local elementWeaponBack = {}
@@ -261,7 +517,7 @@ local chatEadioRadius = 250
 
 --FUNctions TODO: organize this
 ---utility functions
-function createObjectEx(model,px,py,pz,rx,ry,rz,i,d,bIsLowLOD)
+local createObjectEx = function(model,px,py,pz,rx,ry,rz,i,d,bIsLowLOD)
 	--this is a custom wrapper for createObject
 	--it allows you to choose interior and dimension
 	--why? because i wanted it dealwithit
@@ -271,7 +527,7 @@ function createObjectEx(model,px,py,pz,rx,ry,rz,i,d,bIsLowLOD)
 	if d then setElementDimension(objTemp,d) end
 	return objTemp
 end
-function getAttachOffsets(e1,e2) 
+local getAttachOffsets = function(e1,e2) 
 	--thank you based glue resource
 	--this determines the attach offsets 
 	--for two objects that are touching
@@ -300,48 +556,49 @@ function getAttachOffsets(e1,e2)
 	local rotZ = rotpZ - rotvZ	
 	return offX,offY,offZ,rotX,rotY,rotZ
 end
-function getWeaponAmmoType(weaponName, notOthers) --FUTR: update to work with invMaster
+local getWeaponAmmoType = function(weaponName, notOthers) --this is an OLD iterator			--FUTR: update to work with invMaster
   if not notOthers then
-    for i,weaponData in ipairs(weaponAmmoTable.others) do
+    for i,weaponData in ipairs(weaponAmmoTableOLD.others) do
       if weaponName == weaponData[1] then
         return weaponData[1], weaponData[2]
       end
     end
   end
-  for i,weaponData in ipairs(weaponAmmoTable["Pistol Ammo"]) do
+  for i,weaponData in ipairs(weaponAmmoTableOLD["Pistol Ammo"]) do
     if weaponName == weaponData[1] then
       return "Pistol Ammo", weaponData[2]
     end
   end
-  for i,weaponData in ipairs(weaponAmmoTable["Smg Ammo"]) do
+  for i,weaponData in ipairs(weaponAmmoTableOLD["Smg Ammo"]) do
     if weaponName == weaponData[1] then
       return "Smg Ammo", weaponData[2]
     end
   end
-  for i,weaponData in ipairs(weaponAmmoTable["Assault Ammo"]) do
+  for i,weaponData in ipairs(weaponAmmoTableOLD["Assault Ammo"]) do
     if weaponName == weaponData[1] then
       return "Assault Ammo", weaponData[2]
     end
   end
-  for i,weaponData in ipairs(weaponAmmoTable["Shotgun Ammo"]) do
+  for i,weaponData in ipairs(weaponAmmoTableOLD["Shotgun Ammo"]) do
     if weaponName == weaponData[1] then
       return "Shotgun Ammo", weaponData[2]
     end
   end
-  for i,weaponData in ipairs(weaponAmmoTable["Sniper Ammo"]) do
+  for i,weaponData in ipairs(weaponAmmoTableOLD["Sniper Ammo"]) do
     if weaponName == weaponData[1] then
       return "Sniper Ammo", weaponData[2]
     end
   end
-  for i,weaponData in ipairs(weaponAmmoTable["Rocket Ammo"]) do
+  for i,weaponData in ipairs(weaponAmmoTableOLD["Rocket Ammo"]) do
     if weaponName == weaponData[1] then
       return "Rocket Ammo", weaponData[2]
     end
   end
   return false
 end
---the rest
-function initVeh(eVeh) --TODO(80%): NEW PLANS:
+
+--init funcs
+function initVehOLD(eVeh) --TODO(80%): NEW PLANS:
 	--[[THESE ARE THE NEW PLANS
 		oh baby		
 		call me
@@ -398,12 +655,12 @@ end
 function initAllVehicles() 
 	local vehs = getElementsByType("vehicle", mapRoot)
 	for k,v in pairs(vehs) do
-		initVeh(v)
+		initVehOLD(v)
 	end
 end
 function initInv(e,tab) --FUTR: update to work with invMaster
 	if not tab then
-		tab = initInvTab
+		tab = initInvTabOLD
 	end
 	for k,v in pairs(tab) do
 		setElementData(e,k,v)
@@ -411,17 +668,17 @@ function initInv(e,tab) --FUTR: update to work with invMaster
 end
 function initPlayer(ePlr) --FUTR: update to work with invMaster
 	initInv(ePlr)
-	initInv(ePlr,initPlrTab)
+	initInv(ePlr,initPlrTabOLD)
 end
 function loadPlrInv(ePlr) --FUTR: update to work with invMaster
 	local tempTab = {}
 	local usrAcct = getPlayerAccount(ePlr)
 	local sav = getAccountData(usrAcct, "line-z.sav") --lets access the db AGAIN
 	if sav == 1 then --so wait if they have no save dont try and load? BRILLIANT
-		for k,_ in pairs(initInvTab) do
+		for k,_ in pairs(initInvTabOLD) do
 			tempTab[k] = getAccountData(usrAcct, "line-z.inv_"..k)
 		end
-		for k,_ in pairs(initPlrTab) do
+		for k,_ in pairs(initPlrTabOLD) do
 			tempTab[k] = getAccountData(usrAcct, "line-z.inv_"..k)
 		end
 	initInv(ePlr, tempTab)
@@ -429,11 +686,11 @@ function loadPlrInv(ePlr) --FUTR: update to work with invMaster
 end
 function savePlrInv(ePlr) --FUTR: update to work with invMaster | maybe make a seperate inventory.db
 	local usrAcct = getPlayerAccount(ePlr)
-	for k,_ in pairs(initInvTab) do --each inventory item gets a db entry, why? because it wouldnt let me store a whole table of items RIP
+	for k,_ in pairs(initInvTabOLD) do --each inventory item gets a db entry, why? because it wouldnt let me store a whole table of items RIP
 		local edata = getElementData(ePlr,k) --todo: figure out how to store a big table of items
 		setAccountData(usrAcct, "line-z.inv_"..k, edata) --todo: figure out sqlite and DO MY OWN DATABASE QUERIES
 	end
-	for k,_ in pairs(initPlrTab) do
+	for k,_ in pairs(initPlrTabOLD) do
 		local edata = getElementData(ePlr,k)
 		setAccountData(usrAcct, "line-z.inv_"..k, edata)
 	end
@@ -449,7 +706,9 @@ function savePlrSpn(ePlr)
 	}
 	setAccountData(getPlayerAccount(ePlr), "line-z.spawn", toJSON(spawn))
 end
-function randomSpawn() --FUTR: add spawngroups (for randomization purposes)
+
+--helper funcs
+function randomSpawn() 																			--FUTR: add spawngroups (for randomization purposes)
 	local spawntab = getElementsByType("spawnpoint", mapRoot)
 	local spawn = spawntab[math.random(1,table.maxn(spawntab))]
 	local x,y,z,r,m,i,d = getElementData(spawn,"posX"),
@@ -484,13 +743,13 @@ function itemCheck(ePlr, item) --FUTR: update to work with invMaster
 	end
 end
 function skinIDtoName(sID) 
-	for k,v in pairs(skinTable) do
+	for k,v in pairs(skinTableOLD) do
 		if (sID == v[1]) or (sID == v[2]) then
 			return k
 		end
 	end
 end
-function deathHelper(ePlr) --this is incredibly stupid i dont know why i moved all this here
+function deathHelper(ePlr) 																		--this is incredibly stupid i dont know why i moved all this here
 	local x,y,z = getElementPosition(ePlr) 
 	local _,_,r = getElementRotation(ePlr)
 	local m,i,d,eCon = getElementModel(ePlr),
@@ -519,6 +778,8 @@ function deathHelper(ePlr) --this is incredibly stupid i dont know why i moved a
 				setTimer(destroyElement,1800000,1,corpse) --30 minutes
 			end,2000,1)
 end
+
+--big ones
 function createThing(ePlr,thingType) --TODO(33%): tents and fences --LOTS OF "MAGIC" HAPPENS HERE --it has to happen somewhere
 ---[[debug stuff
 	outputChatBox("creating '"..tostring(thingType).."'") --]]
@@ -587,6 +848,8 @@ function createLootZone(e,zType,bAttach) --TODO(75%): pull/link/init OLDINV (dea
 	setElementData(col,zType,true)
 	return col
 end
+
+-- ? mysteries ? 
 function addPlayerStats(player, data, value) --todo: figure me out
   if data == "food" then
     local current = getElementData(player, data)
@@ -635,29 +898,8 @@ function addPlayerStats(player, data, value) --todo: figure me out
     setElementData(player, data, current + value)
   end
 end
---debug/admin funcs
-function giveItemOld(ePlr,item,value) 
-	if not ePlr then return "failure: no player" end--begin insanity
-	if not item then return "failure: no item" end
-	local test = false
-	for k,_ in pairs(initInvTab) do if k == item then test = true; break end end --this might break things GET IT (no really fix this if it bugs out)
-	if not test then return "failure: invalid item '"..tostring(item).."'" end
-	if (not value) or (type(value) ~= "number") then value = 1 end 
-	value = math.floor(math.abs(value))	--no fractions, no subtractions
-	setElementData(ePlr,item,getElementData(ePlr,item)+value) --ok we're good, give em the item
-	return "gave "..value.." of '"..item.."' to '"..getPlayerName(ePlr).."' ("..tostring(ePlr)..")"
-end
-
-
-function giveItemNew()
-end
-function createVehNew()
-end
-
-
---borrow
 function getWeaponObjectID(weaponID)
-  for i,weaponData in ipairs(weaponIDtoObjectID) do
+  for i,weaponData in ipairs(weaponIDtoObjectIDOLD) do
     if weaponID == weaponData[1] then
       return weaponData[2]
     end
@@ -685,6 +927,31 @@ function backpackRemoveQuit(ePlr)
 		elementWeaponBack[ePlr] = false
 	end
 end
+
+
+--debug/admin funcs
+function giveItemOLD(ePlr,...) --100% me
+	local arge = {...}
+	if not ePlr then return "usage: giveitem playername itemname [value]" end --begin insanity
+	if not arge[1] then return "error: no item" end
+	if not arge[2] then arge[2] = 1 end 
+	local item,value = arge[1],arge[2]
+	if arge[1]:sub(1,1) == "'" or arge[1]:sub(1,1) == "\"" then
+		for k,v in ipairs(arge) do 
+			if not (item == v) then item = item.." "..v end
+			if v:sub(-1) == "'" or v:sub(-1) == "\"" then item = item:sub(2,-2); break end
+		end		
+	end
+	if type(value) ~= "number" then value = 1 end
+	local result = false
+	for k,_ in pairs(initInvTabOLD) do if k == item then result = true; break end end 
+	if not result then return "error: invalid item \""..tostring(item).."\"" end	
+	value = math.floor(math.abs(value))	--no fractions, no subtractions
+	setElementData(ePlr,item,getElementData(ePlr,item)+value) --ok we're good, give em the item
+	return "gave "..value.." of \""..item.."\" to \""..getPlayerName(ePlr).."\" ("..tostring(ePlr)..")"
+end
+
+
 
 
 --NEW EVENTS | FUTR: combine thing stuff into thingHandler
@@ -788,7 +1055,7 @@ function skinHandler(item) --DONE(99%) FUTR: update to work with invMaster | sta
 	local amt = itemCheck(source, item)
 	if amt then 
 		local oldName,newID = skinIDtoName(getElementModel(source)),
-							  skinTable[item][1]
+							  skinTableOLD[item][1]
 		local amt2 = getElementData(source,oldName)
 		if (not amt2) then
 			amt2 = 0
@@ -958,11 +1225,8 @@ function playerRadioChat(playersource, cmd, ...)
 end
 addCommandHandler("radiochat", playerRadioChat)
   --debug/admin stuff
-function giveItemCommand(pSource, cmd, ePlr, item, value)
-	--keep me just incase, i feel insecure about lua being amazing
-end
 
-addCommandHandler("giveitem", function(pSource,_,plrName,item,value) outputChatBox("giveitem "..giveItemOld(getPlayerFromName(plrName),item,value), pSource, 200, 60, 40) end, true) --items with spaces in their name are fucked i guess RIB
+addCommandHandler("giveitem", function(pSource,_,plrName,...) outputChatBox("giveitem "..giveItemOLD(getPlayerFromName(plrName or ""),...), pSource, 200, 60, 40) end, true) --items with spaces in their name are fucked i guess RIB
 --addCommandHandler("spawnveh", spawnVehCommand,true)
 
 
@@ -975,16 +1239,16 @@ local function initHandler()
 	   hasObjectPermissionTo(thisResource,"function.aclGroupAddACL") and
 	   hasObjectPermissionTo(thisResource,"function.aclGroupRemoveObject") then
 		if aclGet("line-z") and aclGetGroup("line-z admin") then
-			outputDebugString("***acls loaded***")
+			outputServerLog("***acls loaded***")
 			return true
 		else
-			outputDebugString("***creating acls***")
+			outputServerLog("***creating acls***")
 			local aclName, aclGroup = aclCreate("line-z"), aclCreateGroup("line-z admin")
 			aclGroupAddACL(aclGroup, aclName)
 			aclSetRight(aclName, "general.adminpanel", false)
 			aclSetRight(aclName, "resource.line-z.adminpanel", true)
 			aclSetRight(aclName, "command.giveitem", true)
-			aclName = aclGet("Moderator")
+			aclName = aclGet("Moderator") --this is all temp until i figure out what funcs i need
 			if not aclName then outputDebugString("no general moderator acl") else
 				aclGroupAddACL(aclGroup, aclName)
 			end
@@ -1000,13 +1264,14 @@ local function initHandler()
 			if not aclName then outputDebugString("no general rpc acl") else
 				aclGroupAddACL(aclGroup, aclName)
 			end
-			outputDebugString("***acls created***")
+			outputServerLog("***acls created***")
 			aclSave()
-			changeGamemode("line-z")
+			setTimer(function() exports.mapmanager:changeGamemode(exports.mapmanager:getRunningGamemode()) end, 650, 1)
+			setTimer(function() outputServerLog("***acl initialization complete. add your username to \"line-z admins\" in acl.xml for admin access***") end, 1500, 1)
 		end
 	else
-		outputDebugString("error: resource needs console level access in ACL to initialize")
-		outputDebugString("add '<object name=\"resource.line-z\"></object>' to your acl.xml under 'console'")
+		outputServerLog("error: resource needs console level access in ACL to initialize")
+		outputServerLog("add '<object name=\"resource.line-z\"></object>' to your acl.xml under 'console'")
 		cancelEvent()
 	end
 end
